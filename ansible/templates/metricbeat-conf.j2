@@ -1,0 +1,72 @@
+# You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/metricbeat/index.html
+
+#==========================  Modules configuration ============================
+metricbeat.modules:
+
+#------------------------------- System Module -------------------------------
+- module: system
+  metricsets:
+    # CPU stats
+    - cpu
+
+    # System Load stats
+    - load
+
+    # Per CPU core stats
+    - core
+
+    # IO stats
+    - diskio
+
+    # Per filesystem stats
+    - filesystem
+
+    # File system summary stats
+    - fsstat
+
+    # Memory stats
+    - memory
+
+    # Network stats
+    - network
+
+    # Per process stats
+    - process
+
+    # Sockets (linux only)
+    #- socket
+  enabled: true
+  period: {{ metricbeat_polltime }}
+  processes: ['.*']
+
+
+#================================ General =====================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+name: {{ metric_sitename }}
+
+#================================ Outputs =====================================
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: ["{{ elk_endpoint }}"]
+  template.name: "metricbeat_slave"
+  template.path: "metricbeat.template.json"
+  template.overwrite: false
+
+  # Optional protocol and basic auth credentials.
+  protocol: "http"
+  username: "{{ elastic_username }}"
+  password: "{{ elastic_password }}"
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug

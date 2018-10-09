@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xcache-pod
+  labels:
+    app: xcache
+spec:
+  template:
+    metadata:
+      labels:
+        app: xcache
+    spec:
+      imagePullPolicy: Always
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - xcache
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: cache
+        imagePullPolicy: Always
+        args:
+        - --proxy
+        - --health_port
+        - "8088"
+        env:
+        - name: BLOCK_SIZE
+          value: 512k
+        - name: CACHE_LOG_LEVEL
+          value: info
+        - name: CACHE_PATH
+          value: /data/xrd
+        - name: CACHE_RAM_GB
+          value: "2"
+        - name: HI_WM
+          value: "0.9"
+        - name: LOW_WM
+          value: "0.8"
+        - name: N_PREFETCH
+          value: "0"
+        - name: ORIGIN_HOST
+          value: xrootd-cms.infn.it
+        - name: ORIGIN_XRD_PORT
+          value: "1094"
+        - name: REDIR_CMSD_PORT
+          value: "31213"
+        - name: REDIR_HOST
+          value: xcache-service.default.svc.cluster.local
+        - name: STREAMS
+          value: "256"
+        image: cloudpg/xrootd-proxy:demo
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:8088/check_health
+          initialDelaySeconds: 300
+          periodSeconds: 60
+        ports:
+        - containerPort: 32294
+        - containerPort: 31113
+
+  selector:
+    matchLabels:
+      app: xcache
+
+  replicas: 3
+  volumes:
+  - name: xcache-data
+    hostPath:
+      path: /data/xrd

@@ -1,0 +1,82 @@
+set rdtrCache={{ REDIR_HOST }}
+set rdtrPortCmsd={{ REDIR_CMSD_PORT }}
+set rdtrGlobal={{ ORIGIN_HOST }}
+set rdtrGlobalPort={{ ORIGIN_XRD_PORT }}
+set cacheLowWm={{ LOW_WM }}
+set cacheHiWm={{ HI_WM }}
+set cacheLogLevel={{ CACHE_LOG_LEVEL }}
+set cachePath={{ CACHE_PATH }}
+set cacheRam={{ CACHE_RAM_GB }}
+set cacheStreams={{ STREAMS }}
+set prefetch={{ N_PREFETCH }}
+set blkSize={{ BLOCK_SIZE }}
+
+
+all.manager $rdtrCache:$rdtrPortCmsd
+
+xrootd.trace info 
+ofs.trace info
+xrd.trace info
+cms.trace info
+sec.trace info
+pfc.trace $cacheLogLevel
+
+if exec cmsd
+
+all.role server
+xrd.port 31113
+# Export with stage option - this tells manager cmsd we can pull files from the origin
+#
+all.export / stage 
+
+# The cmsd uses the standard oss plug-in to locate files in the cache.
+# oss.localroot directive should be the same as for the server.
+#
+
+oss.localroot $cachePath
+
+# Server?s xrootd configuration ? all PFC?s are virtual data servers
+#
+else
+
+all.export / 
+all.role  server
+oss.localroot $cachePath
+
+xrd.port 32294
+# For xrootd, load the proxy plugin and the disk caching plugin.
+#
+ofs.osslib   libXrdPss.so
+pss.cachelib libXrdFileCache.so
+
+pss.origin $rdtrGlobal:$rdtrGlobalPort
+
+pss.config streams $cacheStreams
+
+#xrootd.seclib /usr/lib64/libXrdSec.so                                                                                                                                                                              
+#sec.protocol /usr/lib64 gsi \                                                                                                                                                                                      
+#  -certdir:/etc/grid-security/certificates \                                                                                                                                                                       
+#  -cert:/etc/grid-security/xrd/xrdcert.pem \
+#  -key:/etc/grid-security/xrd/xrdkey.pem \
+#  -d:3 \                                                                                                                                                                                                           
+#  -crl:1                                                                                                                                                                                                           
+                                                                                                                                                                                                                   
+# Enable the authorization module, even if we have an unauthenticated instance.                                                                                                                                    
+ofs.authorize 1                                                                                                                                                                                                    
+acc.audit deny grant                                                                                                                                                                                               
+                                                                                                
+acc.authdb /etc/xrootd/Authfile-auth                                                                                                                                                                               
+#sec.protbind * gsi     
+
+pfc.diskusage $cacheLowWm $cacheHiWm
+pfc.ram       ${cacheRam}g
+
+pfc.blocksize   $blkSize
+pfc.prefetch    $prefetch
+
+# pfc.osslib ceph
+## Or in alternative, cache by blocks
+#
+#pfc.hdfsmode  hdfsbsize 64m
+
+fi

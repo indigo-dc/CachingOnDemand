@@ -1,0 +1,19 @@
+---
+# defaults file for dciangot.xcache
+BLOCK_SIZE: 512k
+CACHE_LOG_LEVEL: info
+CACHE_PATH: /data/xrd
+CACHE_RAM_GB: 12
+HI_WM: "0.9"
+LOW_WM: "0.8"
+N_PREFETCH: "0"
+ORIGIN_HOST: origin
+ORIGIN_XRD_PORT: "1094"
+REDIR_CMSD_PORT: "31213"
+REDIR_HOST: xcache-service.default.svc.cluster.local
+STREAMS: "256"
+metricbeat_polltime: 60s
+metric_sitename: changeme
+elk_endpoint: localhost:9000
+elastic_username: dodas
+elastic_password: testpass

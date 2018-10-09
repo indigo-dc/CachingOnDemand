@@ -1,0 +1,42 @@
+# if orchestrator = marathon
+
+# set ipv4 in docker
+# increase nofile
+
+- name: push XCache redirector app
+  run_once: true
+  uri:
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/apps/xredirector"
+     user: "{{marathon_username}}"
+     password: "{{marathon_password}}"
+     validate_certs: "no"
+     method: PUT
+     HEADER_Content-Type: "application/json"
+     body: "{{ lookup('template', 'templates/xredir-app.json') }}"
+     body_format: json
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 20
+  changed_when: false
+  tags:
+    - cms_apps
+
+- name: push XCache server app
+  run_once: true
+  uri:
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/apps/xserver"
+     user: "{{marathon_username}}"
+     password: "{{marathon_password}}"
+     validate_certs: "no"
+     method: PUT
+     HEADER_Content-Type: "application/json"
+     body: "{{ lookup('template', 'templates/xserver-app.json') }}"
+     body_format: json
+  register: result
+  until: result.status == 200
+  retries: 10
+  delay: 20
+  changed_when: false
+  tags:
+    - cms_apps
