@@ -1,3 +1,3 @@
 # On-Demand XCache cluster
 
-[Documentation](https://dodas-ts.github.io/XCacheOnDemand/)
+[Documentation](https://cloud-pg.github.io/CachingOnDemand/)
