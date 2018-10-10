@@ -10,7 +10,7 @@ You can look at the [official XrootD documentation](http://xrootd.org/docs.html)
 
 ## XCache components
 
-TODO: image
+Please find an overview description of the architecture in [this presentation](https://github.com/DODAS-TS/XCacheOnDemand/blob/master/docs/XDC-AH_%20Distributed%20cache%20with%20XRootD.pdf)
 
 ## Ansible deployment
 
@@ -54,27 +54,33 @@ elastic_password: testpass # elasticsearch password
     - role: dciangot.xcache 
 ```
 
-### Deployement example
+### Deployment example: CMS XCache
 
-TODO
+[https://xcache.readthedocs.io/en/latest/automated-grid.html](https://xcache.readthedocs.io/en/latest/automated-grid.html)
 
 ## Deployment with Docker
 
-TODO
+[https://hub.docker.com/r/cloudpg/xrootd-proxy/](https://hub.docker.com/r/cloudpg/xrootd-proxy/)
 
 ### On-demand XCache docker image
 
-TODO
+Please find the Dockerfile in this repository [here](https://github.com/DODAS-TS/XCacheOnDemand/blob/master/docker/Dockerfile)
+
+To personalize and build your own image, just apply you changes in the Dockerfile and run:
+
+``` bash
+docker build . -t my_image
+```
 
 ### Deploy a cluster with docker compose
 
-TODO
+If you want to try a demo deployment with docker compose, you can do it with the compose file [here](https://github.com/DODAS-TS/XCacheOnDemand/blob/master/docker/docker-compose.yml)
 
 ## Deployment on Kubernetes
 
 ### Components recipe
 
-TODO
+Please take a look at the demonstration presented [here](https://cloud-pg.github.io/XDC-AH-demo). That will guide you through a step by step deployment of a cache cluster in K8s.
 
 ### Deployment with Helm
 
@@ -82,14 +88,7 @@ Coming soon...
 
 ## TOSCA description files for PaaS orchestration
 
-### Kubernetes cluster
+- [Kubernetes cluster](https://github.com/DODAS-TS/XCacheOnDemand/blob/master/toscaTemplates/DODAS-TS/kube_deploy.yml)
+  - [Kubernetes deployment charts](https://github.com/DODAS-TS/XCacheOnDemand/tree/master/toscaTemplates/k8s)
+- [Real case example: TOSCA template for XCache in CMS experiment with Marathon](https://github.com/DODAS-TS/XCacheOnDemand/blob/master/toscaTemplates/DODAS-TS/cms_marathon_cluster.yml)
 
-TODO
-
-### Marathon cluster
-
-TODO
-
-## Real case example: TOSCA template for CMS experiment
-
-TODO
