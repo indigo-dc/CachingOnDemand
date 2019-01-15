@@ -6,7 +6,6 @@ yum install -y ca-policy-egi-core ca-policy-lcg
 wget -O /etc/yum.repos.d/ca_CMS-TTS-CA.repo https://ci.cloud.cnaf.infn.it/view/dodas/job/ca_DODAS-TTS/job/master/lastSuccessfulBuild/artifact/ca_DODAS-TTS.repo
 yum -y install ca_DODAS-TTS
 
-
 chmod 600 /etc/grid-security/xrd/userkey.pem
 
 sudo chown -R xrootd:xrootd /etc/grid-security/xrd/
