@@ -21,6 +21,7 @@ group = parser.add_mutually_exclusive_group(required=True)
 
 group.add_argument('-P', '--proxy', help='XrootD proxy file cache mode', action="store_true")
 group.add_argument('-R', '--redirector', help='XrootD cache redirector mode', action="store_true")
+group.add_argument('-E', '--expose', help='cache expose mode', action="store_true")
 group.add_argument('--config', help='XrootD config file path')
 
 parser.add_argument('--nogrid', help='avoid grid CAs installation', action="store_true")
@@ -108,17 +109,20 @@ if __name__ == "__main__":
         DEFAULT_CONFIG = "/etc/xrootd/xrd_cache_env.conf"
     if args.redirector:
         DEFAULT_CONFIG = "/etc/xrootd/xrd_redirector_env.conf"
+    if args.expose:
+        DEFAULT_CONFIG = "/etc/xrootd/xrd_proxy_env.conf"
 
     logging.info("Using configuration file: %s" % DEFAULT_CONFIG)
 
-    cmsd_command = "sudo -E -u xrootd /usr/bin/cmsd -k 3 -l /var/log/xrootd/cmsd.log -c " + DEFAULT_CONFIG
-    logging.debug("Starting cmsd daemon: \n %s", cmsd_command)
-    try:
-        cmsd_proc = subprocess.Popen(cmsd_command, shell=True)
-    except ValueError as ex:
-        logging.error("ERROR: when launching cmsd daemon: %s \n %s" % (ex.args, ex.message))
-        sys.exit(1)
-    logging.debug("cmsd daemon started!")
+    if not args.expose:
+        cmsd_command = "sudo -E -u xrootd /usr/bin/cmsd -k 3 -l /var/log/xrootd/cmsd.log -c " + DEFAULT_CONFIG
+        logging.debug("Starting cmsd daemon: \n %s", cmsd_command)
+        try:
+            cmsd_proc = subprocess.Popen(cmsd_command, shell=True)
+        except ValueError as ex:
+            logging.error("ERROR: when launching cmsd daemon: %s \n %s" % (ex.args, ex.message))
+            sys.exit(1)
+        logging.debug("cmsd daemon started!")
 
     xrd_command = "sudo -E -u xrootd /usr/bin/xrootd -k 3 -l /var/log/xrootd/xrd.log -c " + DEFAULT_CONFIG
     logging.debug("Starting xrootd daemon: \n %s", xrd_command)
@@ -129,6 +133,9 @@ if __name__ == "__main__":
         sys.exit(1)
     logging.debug("xrootd daemon started!")
 
-    APP.cmsd_proc = cmsd_proc
+    if not args.expose:
+        APP.cmsd_proc = cmsd_proc
+    else:
+        APP.cmsd_proc = xrd_proc
     APP.xrd_proc = xrd_proc
     APP.run(host="0.0.0.0", port=args.health_port)

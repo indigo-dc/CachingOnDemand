@@ -1,5 +1,7 @@
 #!/bin/bash
 
+chown -R xrootd:xrootd /data/xrd
+
 VALID=`sudo -u xrootd grid-proxy-info -f /tmp/x509up_u998 -e -h 24 && echo "VALID" || echo "EXPIRED"`
 
 if [ "$VALID" == "VALID" ]; then
@@ -13,8 +15,8 @@ else
 
     /usr/sbin/fetch-crl -q
 
-    wget -O /etc/yum.repos.d/ca_CMS-TTS-CA.repo https://ci.cloud.cnaf.infn.it/job/cnaf-mw-devel-jobs/job/ca_CMS-TTS-CA/job/master/lastSuccessfulBuild/artifact/ca_CMS-TTS-CA.repo
-    yum -y install ca_CMS-TTS-CA
+    wget -O /etc/yum.repos.d/ca_CMS-TTS-CA.repo https://ci.cloud.cnaf.infn.it/view/dodas/job/ca_DODAS-TTS/job/master/lastSuccessfulBuild/artifact/ca_DODAS-TTS.repo
+    yum -y install ca_DODAS-TTS
 
     echo "DONE."
 fi

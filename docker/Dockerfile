@@ -28,9 +28,6 @@ RUN chown -R xrootd:xrootd /var/log/xrootd/
 
 RUN echo 'xrootd ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-ADD proxy_grid /tmp/x509up_u998
-RUN chown -R xrootd:xrootd /tmp/x509up_u998 
-
 
 EXPOSE 80
 

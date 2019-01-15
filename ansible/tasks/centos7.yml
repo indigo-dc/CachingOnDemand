@@ -39,14 +39,14 @@
 
 - name: create xcache server configuration
   template: 
-    src: templates/xcache-server-conf.j2
+    src: templates/metal/xcache-server-conf.j2
     dest: /etc/xrootd/xrootd-xcache.cfg
     owner: xrootd
     group: xrootd
 
 - name: create /etc/xrootd/Authfile-noauth
   template: 
-    src: templates/Authfile-noauth.j2
+    src: templates/metal/Authfile-noauth.j2
     dest: /etc/xrootd/Authfile-noauth
 
 #- name: set xrootd owner for /etc/grid-security/xrd

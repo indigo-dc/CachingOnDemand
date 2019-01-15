@@ -1,7 +1,11 @@
 ---
 # defaults file for dciangot.xcache
-- import_tasks: centos7.yml
-  when: ansible_distribution == "CentOS" and ansible_distribution_major_version > '6'
+- include: centos7.yml
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version > '6' and orchestrator == "metal"
 
-- import_tasks: docker.yml
-  when: ansible_distribution != "CentOS" or ansible_distribution_major_version <= '6'
+- include: marathon.yml
+  when: orchestrator == "marathon"
+
+- include: k8s.yml
+  when: orchestrator == "k8s"
+
