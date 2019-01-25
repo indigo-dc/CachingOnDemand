@@ -7,13 +7,14 @@ You can at the [official XrootD documentation](http://xrootd.org/docs.html) for 
 
 * `--nogrid`: avoid WLCG CAs installation
 * `--health_port`: port for healthcheck process listening, type=int, default=80
+* `--config`: specify xrootd config file
 
 ## Important container paths
 
 * `/data/xrd/`: saved file location for both cache and std modes
 * `/etc/xrootd/`: config files dir
 * `/var/log/xrootd/cmsd.log`: log of cmsd service
-* `/var/log/xrootd/cmsd.log`: log of xrootd service
+* `/var/log/xrootd/xrootd.log`: log of xrootd service
 
 ## Running by hand
 
@@ -21,7 +22,7 @@ Just put your xrootd config file in $PWD/config:/etc/xrootd
 
 ```bash
 # with your xrd_cache.conf on $PWD/config
-sudo docker run --rm --privileged -p 32294:32294 -p 31113:31113 -v $PWD/config:/etc/xrootd cloudpg/xrootd-proxy --config /etc/xrootd/xrd_test.conf
+sudo docker run --rm --privileged -p 32294:32294 -p 31113:31113 -v $PWD/config:/etc/xrootd cloudpg/cachingondemand --config /etc/xrootd/xrd_test.conf
 ```
 
 * REMEMBER To expose the ports indicated in your config file. In the case of config/xrd_test.conf are: 32294, 31113
@@ -44,12 +45,11 @@ Then run use the docker-compose.yml file provided to bring up locally:
 * an origin server with config in config/xrd_test_origin.conf
 * a file cache server with config in config/xrd_test.conf
 * a file cache redirector with config in config/xrd_test-redir.conf
-* a container where one can test the xrd client
 
 The command for bringing the full stack up is:
 ```
-git clone https://github.com/Cloud-PG/docker-images.git
-cd docker-images/xrd-proxy
+git clone https://github.com/Cloud-PG/cachingondemand.git
+cd cachingondemand/docker
 /usr/local/bin/docker-compose up -d
 ```
 
@@ -62,11 +62,11 @@ To shutdown the stack:
 
 ```bash
 # Put a test file on the remote host
-sudo docker exec -ti xrdproxy_origin_1 touch /data/xrd/test.txt
+sudo docker exec -ti docker_client_1 sh -c "echo \"This is my file\" test.txt & xrdcp test.txt root://docker_origin_1:1194//test.txt"
 # Request that file from the cache redirector xrootd process 
 # that is listening on 1094
-sudo docker exec -ti xrdproxy_client_1 xrdcp -f root://localhost:1094//test.txt /dev/null
+sudo docker exec -ti docker_client_1 xrdcp -f -d3 root://docker_redirector_1//test.txt remote_test.txt
 # If you find no error you can now check that the file is correctly cached on cache server
-sudo docker exec -ti xrdproxy_cache_1 ls /data/xrd/
+sudo docker exec -ti docker_cache_1 ls /data/xrd/
 # you should see these two files: test.txt  test.txt.cinfo
 ```

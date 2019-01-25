@@ -105,6 +105,8 @@ if __name__ == "__main__":
         logging.info("Intalling CAs... - DONE")
 
     check_env()
+    if args.config:
+        DEFAULT_CONFIG = args.config
     if args.proxy:
         DEFAULT_CONFIG = "/etc/xrootd/xrd_cache_env.conf"
     if args.redirector:

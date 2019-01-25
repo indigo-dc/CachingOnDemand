@@ -3,8 +3,8 @@ services:
   cache:
     deploy:
       replicas: 2
-    image: "cloudpg/xrootd-proxy:xrd"
-    command: ["--nogrid", "--proxy", "--health_port", "8080"] 
+    image: "cloudpg/cachingondemand"
+    command: ["--nogrid", "--config", "/etc/xrootd/xrd_test.conf" ,"--health_port", "8080"] 
     environment:
       REDIR_HOST: 'redirector'
       REDIR_CMSD_PORT: 1213
@@ -27,8 +27,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
 
   redirector:
-    image: "cloudpg/xrootd-proxy:xrd"
-    command: ["--nogrid", "--redirector", "--health_port", "8080"] 
+    image: "cloudpg/cachingondemand"
+    command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_redir.conf" ,"--health_port", "8080"] 
     environment:
       REDIR_HOST: 'redirector'
       REDIR_CMSD_PORT: 1213
@@ -42,7 +42,17 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
 
   origin:
-    image: "cloudpg/xrootd-proxy:xrd"
+    image: "cloudpg/cachingondemand"
+    command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_origin.conf", "--health_port", "8080"]
+    networks:
+      - overlay
+    expose:
+      - "1194"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
+
+  client:
+    image: "cloudpg/cachingondemand"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_origin.conf", "--health_port", "8080"]
     networks:
       - overlay
