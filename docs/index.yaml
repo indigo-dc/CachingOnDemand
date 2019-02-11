@@ -8,6 +8,6 @@ entries:
     digest: b90a41eece512d8b8b70123c4d11a5619bb3c453c62fe7c8176d6e25ab078170
     name: cachingondemand
     urls:
-    - cachingondemand-0.1.0.tgz
+    - https://cloud-pg.github.io/CachingOnDemand/cachingondemand-0.1.0.tgz
     version: 0.1.0
 generated: 2019-02-11T14:59:47.979338567+01:00
