@@ -185,7 +185,7 @@ spec:
         - mountPath: /data/xrd
           name: xcache-data
         ## WAITING FOR CMS VOMS TTS solution
-        - mountPath: /opt/
+        - mountPath: /tmp/
           name: xcache-creds
         livenessProbe:
           exec:
