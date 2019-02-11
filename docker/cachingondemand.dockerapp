@@ -1,3 +1,19 @@
+# This section contains your application metadata.
+# Version of the application
+version: 0.1.0
+# Name of the application
+name: cachingondemand
+# A short description of the application
+description: 
+# Namespace to use when pushing to a registry. This is typically your Hub username.
+#namespace: myhubusername
+# List of application maintainers with name and email for each
+maintainers:
+  - name: dciangot
+    email: 
+
+---
+# This section contains the Compose file that describes your application services.
 version: '3.2'
 services:
   cache:
@@ -63,3 +79,7 @@ services:
 
 networks:
   overlay:
+
+---
+# This section contains the default values for your application parameters.
+{}

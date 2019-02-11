@@ -1,0 +1,48 @@
+# Default values for dodas_cms.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+cache:
+  repository: cloudpg/xrootd-proxy
+  tag: cms
+  redir_host: xcache-service.default.svc.cluster.local
+  replicas: 1
+  cache_host_path: /data/xrd
+  block_size: 512k
+  mem_gb: 2
+  high_wm: 0.95
+  low_wm: 0.80
+  n_prefetch: 1
+  origin_host: cms-xrootd.infn.it
+  origin_xrd_port: 1094
+  streams: 256k
+
+redirector:
+  repository: cloudpg/xrootd-proxy
+  tag: cms
+
+proxy:
+  repository: cloudpg/xrootd-proxy
+  tag: cms
+  replicas: 1
+  external_ip: 192.168.0.123
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

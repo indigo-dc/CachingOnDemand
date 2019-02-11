@@ -1,0 +1,61 @@
+{
+	"name": "cachingondemand",
+	"version": "0.1.0",
+	"description": "",
+	"maintainers": [
+		{
+			"name": "dciangot",
+			"email": "",
+			"url": ""
+		}
+	],
+	"invocationImages": [
+		{
+			"imageType": "docker",
+			"image": "docker/cnab-app-base:v0.7.3"
+		}
+	],
+	"images": null,
+	"actions": {
+		"inspect": {
+			"Modifies": false
+		}
+	},
+	"parameters": {
+		"docker.kubernetes-namespace": {
+			"type": "string",
+			"defaultValue": "",
+			"required": false,
+			"metadata": {
+				"description": "Namespace in which to deploy"
+			},
+			"destination": {
+				"path": "",
+				"env": "DOCKER_KUBERNETES_NAMESPACE"
+			}
+		},
+		"docker.orchestrator": {
+			"type": "string",
+			"defaultValue": "",
+			"allowedValues": [
+				"",
+				"swarm",
+				"kubernetes"
+			],
+			"required": false,
+			"metadata": {
+				"description": "Orchestrator on which to deploy"
+			},
+			"destination": {
+				"path": "",
+				"env": "DOCKER_STACK_ORCHESTRATOR"
+			}
+		}
+	},
+	"credentials": {
+		"docker.context": {
+			"path": "/cnab/app/context.dockercontext",
+			"env": ""
+		}
+	}
+}
