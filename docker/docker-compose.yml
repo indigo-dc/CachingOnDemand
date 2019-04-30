@@ -2,13 +2,13 @@ version: '3.2'
 services:
   cache:
     deploy:
-      replicas: 2
-    image: "cloudpg/cachingondemand"
+      replicas: 1 
+    image: "cachingondemand"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test.conf" ,"--health_port", "8080"] 
     environment:
-      REDIR_HOST: 'redirector'
+      REDIR_HOST: 'cache_redirector'
       REDIR_CMSD_PORT: 1213
-      ORIGIN_HOST: 'origin'
+      ORIGIN_HOST: 'cache_origin'
       ORIGIN_XRD_PORT: 1194
       LOW_WM: 0.80
       HI_WM: 0.90
@@ -23,14 +23,14 @@ services:
     expose:
       - "32294"
       - "31113"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
+    volumes:
+      - /home/dciangot/git/xrdpfc-decision-ucsd:/usr/local/xrdpfc-decision-ucsd
 
   redirector:
     image: "cloudpg/cachingondemand"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_redir.conf" ,"--health_port", "8080"] 
     environment:
-      REDIR_HOST: 'redirector'
+      REDIR_HOST: 'cache_redirector'
       REDIR_CMSD_PORT: 1213
       REDIR_XRD_PORT: 1094
     networks:
@@ -38,8 +38,6 @@ services:
     expose:
       - "1094"
       - "1213"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
 
   origin:
     image: "cloudpg/cachingondemand"
@@ -48,8 +46,6 @@ services:
       - overlay
     expose:
       - "1194"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
 
   client:
     image: "cloudpg/cachingondemand"
@@ -58,8 +54,6 @@ services:
       - overlay
     expose:
       - "1194"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
 
 networks:
   overlay:
