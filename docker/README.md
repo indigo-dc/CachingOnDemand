@@ -62,7 +62,7 @@ To shutdown the stack:
 
 ```bash
 # Put a test file on the remote host
-sudo docker exec -ti docker_client_1 sh -c "echo \"This is my file\" test.txt & xrdcp test.txt root://docker_origin_1:1194//test.txt"
+sudo docker exec -ti docker_client_1 sh -c "echo \"This is my file\" > test.txt & xrdcp test.txt root://docker_origin_1:1194//test.txt"
 # Request that file from the cache redirector xrootd process 
 # that is listening on 1094
 sudo docker exec -ti docker_client_1 xrdcp -f -d3 root://docker_redirector_1//test.txt remote_test.txt

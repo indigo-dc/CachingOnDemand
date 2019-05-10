@@ -3,7 +3,7 @@ services:
   cache:
     deploy:
       replicas: 1 
-    image: "cachingondemand"
+    image: "cloudpg/cachingondemand:compose"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test.conf" ,"--health_port", "8080"] 
     environment:
       REDIR_HOST: 'cache_redirector'
@@ -23,11 +23,11 @@ services:
     expose:
       - "32294"
       - "31113"
-    volumes:
-      - /home/dciangot/git/xrdpfc-decision-ucsd:/usr/local/xrdpfc-decision-ucsd
+    #volumes:
+    #  - /home/dciangot/git/xrd-decision:/usr/local/xrd-decision
 
   redirector:
-    image: "cloudpg/cachingondemand"
+    image: "cloudpg/cachingondemand:compose"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_redir.conf" ,"--health_port", "8080"] 
     environment:
       REDIR_HOST: 'cache_redirector'
@@ -40,7 +40,7 @@ services:
       - "1213"
 
   origin:
-    image: "cloudpg/cachingondemand"
+    image: "cloudpg/cachingondemand:compose"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_origin.conf", "--health_port", "8080"]
     networks:
       - overlay
@@ -48,7 +48,7 @@ services:
       - "1194"
 
   client:
-    image: "cloudpg/cachingondemand"
+    image: "cloudpg/cachingondemand:compose"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_origin.conf", "--health_port", "8080"]
     networks:
       - overlay

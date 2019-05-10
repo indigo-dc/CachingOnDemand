@@ -84,7 +84,12 @@ Please take a look at the demonstration presented [here](https://cloud-pg.github
 
 ### Deployment with Helm
 
-Coming soon...
+```bash
+helm init --upgrade
+helm repo add  cloudpg https://dodas-ts.github.io/docker-img_cms/
+helm repo update
+helm install cloudpg/cachingondemand
+```
 
 ## TOSCA description files for PaaS orchestration
 

@@ -23,10 +23,12 @@ help:
 	@echo "- rm			: "
 	@echo "- release		: "
 	@echo "- login			: "
+	@echo "- compose-up		: "
+	@echo "- compose-down		: "
 
 
 build: Dockerfile
-	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
+	docker build --target plugin_server -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
 
 compile-plugins: Dockerfile
 	docker build --target plugins -t $(NS)/$(IMAGE_NAME):plugins -f Dockerfile .
@@ -57,3 +59,9 @@ release: login build
 
 login:
 	docker login
+
+compose-up:
+	docker-compose up -d
+
+compose-down:
+	docker-compose down
