@@ -55,5 +55,24 @@ services:
     expose:
       - "1194"
 
+  reporter:
+    image: "cloudpg/cachereport"
+    environment:
+      COLLECTOR_PORT: "1294"
+    networks:
+      - overlay
+    expose:
+      - "1294"
+
+  portainer:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    image: "portainer/portainer"
+    network_mode: "host"
+    ports:
+    - "9000:9000"
+    expose:
+      - "9000"
+
 networks:
   overlay:

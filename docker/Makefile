@@ -1,4 +1,4 @@
-VERSION=`git describe --tags`
+VERSION ?= `git describe --tags`
 
 NS ?= cloudpg
 IMAGE_NAME ?= cachingondemand
