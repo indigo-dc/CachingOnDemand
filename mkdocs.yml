@@ -1,0 +1,8 @@
+site_name: Caching On Demand
+theme:
+  name: material
+  palette:
+    primary: 'Deep Orange'
+    accent: 'Orange'
+nav:
+- Home: 'README.md'
