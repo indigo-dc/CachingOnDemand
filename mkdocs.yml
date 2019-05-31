@@ -2,8 +2,8 @@ site_name: Caching On Demand
 theme:
   name: material
   palette:
-    primary: 'Deep Orange'
-    accent: 'Orange'
+    primary: 'Deep Purple'
+    accent: 'Green'
 nav:
 - Home: 'README.md'
 - Quick Start (Docker): 'DOCKER.md'

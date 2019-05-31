@@ -15,7 +15,7 @@ cache:
   high_wm: 0.95
   low_wm: 0.80
   n_prefetch: 1
-  origin_host: cms-xrootd.infn.it
+  origin_host: xrootd-cms.infn.it
   origin_xrd_port: 1094
   xrdport: 31494
   cmsport: 31113
