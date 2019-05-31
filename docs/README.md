@@ -22,6 +22,17 @@ a configurable number of cache servers, the core of the tool that are responsibl
 This setup has been tested on different cloud providers. It is also been tested at a scale of 2k concurrent jobs on Open Telekom Cloud resources in the context of HelixNebulaScience Cloud [6] project.
 In the context of the eXtreme Data-Cloud project [7], a collection of recipes have been produced for the automatic deployment of a cache service on demand using different automation technology. For bare metal installation an Ansible [8] playbook is available that can deploy either directly on host or through docker container the whole stack. For those who use docker swarm for container orchestration a docker-compose [9] recipe is also available as for Kubernetes where an Helm [10] chart is provided. All these solutions have been integrated in DODAS [11] and thus with very few changes the same setup can be automatically replicated in different kind of cloud resources.
 
+### Deployment on Kubernetes with Helm
+
+```bash
+helm init --upgrade
+helm repo add  cloudpg https://dodas-ts.github.io/docker-img_cms/
+helm repo update
+helm install cloudpg/cachingondemand
+```
+
+More details in this [demo](demo/DEMO.md)
+
 ## Ansible deployment
 
 ### Requirements
@@ -75,19 +86,6 @@ elastic_password: testpass # elasticsearch password
 ### On-demand XCache docker image and deployment with docker compose
 
 Please follow the instruction [here](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docker/README.md)
-
-## Deployment on Kubernetes
-
-
-
-### Deployment with Helm
-
-```bash
-helm init --upgrade
-helm repo add  cloudpg https://dodas-ts.github.io/docker-img_cms/
-helm repo update
-helm install cloudpg/cachingondemand
-```
 
 
 ## Deployment with dodas

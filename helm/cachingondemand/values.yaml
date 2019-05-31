@@ -17,7 +17,7 @@ cache:
   n_prefetch: 1
   origin_host: cms-xrootd.infn.it
   origin_xrd_port: 1094
-  xrdport: 31094
+  xrdport: 31194
   cmsport: 31213
   streams: 256
   replicas: 1

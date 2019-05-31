@@ -2,6 +2,7 @@ RELEASE = helm
 CHART_NAME = cachingondemand
 GH_PAGES = https://cloud-pg.github.io/CachingOnDemand/
 COMMIT_MSG = "update helm"
+CURRENT_BRANCH = "report_portainer"
 
 .PHONY: help \
 		build \
