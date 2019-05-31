@@ -12,7 +12,9 @@ For part 2:
 - [k8s Docker in Docker](https://github.com/kubernetes-sigs/kubeadm-dind-cluster)
 - remote xrootd host to connect to
 - service certificate authorized to read from remote xrootd host
+  - kept on your local machine as user{cert,key}.pem
 - voms configuration file (optional)
+  - kept on your local machine in folder ./vomses
 
 ## PART 1
 
@@ -46,4 +48,25 @@ Now your kube config file has been update so you should be able to query the clu
 ```bash
 kubectl get node
 ```
+
+### STORE CERTIFICATES IN K8S SECRETS
+
+Certificates can be saved on k8s and made available to all the cache server with this command:
+
+```bash
+kubectl create secret generic certs --from-file=cert.pem=$PWD/usercert.pem --from-file=key.pem=$PWD/userkey.pem
+```
+
+For more details about k8s secrets please visit [this page]()
+
+### STORE VOMSES IN CONFIGMAP
+
+Vomses can be saved on k8s and made available to all the cache server with this command:
+
+```bash
+kubectl create configmap vomses-config --from-file=vomses/
+```
+For more details about k8s configMaps please visit [this page]()
+
+### INSTALL HELM AND CACHINGONDEMAND REPOSITORY
 
