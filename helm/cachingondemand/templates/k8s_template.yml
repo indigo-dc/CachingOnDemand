@@ -216,7 +216,7 @@ spec:
           value: "{{ .Values.cache.redir_host }}"
         - name: STREAMS
           value: "{{ .Values.cache.streams }}"
-        image: "{{ .Values.cache.http_port }}:{{ .Values.cache.tag }}"
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
         volumeMounts:
         - mountPath: /data/xrd
           name: xcache-data
@@ -242,7 +242,7 @@ spec:
           - --renew
           - --vo "{{ .Values.cache.vo }}"
         imagePullPolicy: Always
-        image: cloudpg/proxy-renewal
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
         volumeMounts:
         - name: xcache-creds
           mountPath: /tmp/
