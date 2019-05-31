@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: xcache-server-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: xcache
   ports:
@@ -11,12 +11,12 @@ spec:
     name: xrootd
     port: {{ .Values.cache.xrdport }}
     targetPort: 32294
-    nodePort: {{ .Values.cache.xrdport }}
+    #nodePort: {{ .Values.cache.xrdport }}
   - protocol: TCP
     name: cmsd
     port: {{ .Values.cache.cmsport }}
     targetPort: 31113
-    nodePort: {{ .Values.cache.cmsport }}
+    #nodePort: {{ .Values.cache.cmsport }}
   # TODO: integrate auth
   #- protocol: TCP
   #  name: http
