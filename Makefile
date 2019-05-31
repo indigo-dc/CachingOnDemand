@@ -39,3 +39,12 @@ helm-build:
 	git commit -m ${COMMIT_MSG}
 	git push origin gh-pages
 	git checkout ${CURRENT_BRANCH}
+
+install-mkdocs:
+	pip install mkdocs mkdocs-material
+
+serve-mkdocs:
+	mkdocs serve
+
+publish-mkdocs:
+	mkdocs gh-deploy

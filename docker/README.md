@@ -1,8 +1,5 @@
 # USAGE
-You can at the [official XrootD documentation](http://xrootd.org/docs.html) for detailed information about the tool:
-* [basic configuration](http://xrootd.org/doc/dev47/xrd_config.htm)
-* [cmsd configuration](http://xrootd.org/doc/dev45/cms_config.htm)
-* [proxy file cache](http://xrootd.org/doc/dev47/pss_config.htm)
+
 ## Available options
 
 * `--nogrid`: avoid WLCG CAs installation

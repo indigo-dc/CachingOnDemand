@@ -18,12 +18,18 @@ For part 2:
 
 ## PART 1
 
+### PLAYGROUND WITH DOCKER AND DOCKER COMPOSE
+
+Please follow the instruction [here](../DOCKER.md)
+
+## PART 2
+
 ### START A LOCAL KUBERNETES CLUSTER
 
 Let's start a k8s cluster locally with 4 nodes:
 
 ```bash
-NUM_NODES=4 k8s-dind up
+NUM_NODES=3 k8s-dind up
 ```
 
 The output should be something like:
@@ -38,7 +44,6 @@ kube-master   Ready    master   2m37s   v1.13.0
 kube-node-1   Ready    <none>   116s    v1.13.0
 kube-node-2   Ready    <none>   116s    v1.13.0
 kube-node-3   Ready    <none>   116s    v1.13.0
-kube-node-4   Ready    <none>   116s    v1.13.0
 * Access dashboard at: http://127.0.0.1:32769/api/v1/namespaces/kube-system/services/kubernetes-dashboard:/proxy
 ```
 
@@ -66,7 +71,12 @@ Vomses can be saved on k8s and made available to all the cache server with this 
 ```bash
 kubectl create configmap vomses-config --from-file=vomses/
 ```
+
 For more details about k8s configMaps please visit [this page]()
 
 ### INSTALL HELM AND CACHINGONDEMAND REPOSITORY
+
+
+
+### TAKING A LOOK TO DEPLOYMENT PARAMETERS
 

@@ -165,7 +165,7 @@ if __name__ == "__main__":
                 logging.info("Command output: " + output)
 
 
-            time.sleep(30)
+            time.sleep(3600)
             try:
                 subprocess.check_output("/opt/xrd_proxy/install_ca.sh", stderr=subprocess.STDOUT, shell=True)
             except subprocess.CalledProcessError as ex:
