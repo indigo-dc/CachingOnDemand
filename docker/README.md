@@ -2,6 +2,7 @@
 
 ## Available options
 
+* `--nogsi`: avoid client server gsi auth
 * `--nogrid`: avoid WLCG CAs installation
 * `--health_port`: port for healthcheck process listening, type=int, default=80
 * `--config`: specify xrootd config file

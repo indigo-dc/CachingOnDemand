@@ -223,6 +223,9 @@ spec:
         ## WAITING FOR CMS VOMS TTS solution
         - mountPath: /tmp/
           name: xcache-creds
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
         livenessProbe:
           exec:
             command:
