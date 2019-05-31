@@ -9,10 +9,12 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
+    port: 65534
     targetPort: 32294
     nodePort: {{ .Values.cache.xrdport }}
   - protocol: TCP
     name: cmsd
+    port: 65533
     targetPort: 31113
     nodePort: {{ .Values.cache.cmsport }}
   # TODO: integrate auth
@@ -36,10 +38,12 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
+    port: 65532
     targetPort: 1094
     nodePort: {{ .Values.redirector.xrdport }}
   - protocol: TCP
     name: cmsd
+    port: 65531
     targetPort: 31213
     nodePort: {{ .Values.redirector.cmsport }}
   externalIPs:
@@ -56,6 +60,7 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
+    port: 65530
     targetPort: 1194
     nodePort: 31194
   externalIPs:
