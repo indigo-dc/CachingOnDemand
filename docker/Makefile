@@ -32,8 +32,7 @@ build: Dockerfile
 	docker build --target plugin_server -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
 
 build-doc:
-    pip install mkdocs mkdocs-material
-	
+	pip install mkdocs mkdocs-material
 
 compile-plugins: Dockerfile
 	docker build --target plugins -t $(NS)/$(IMAGE_NAME):plugins -f Dockerfile .

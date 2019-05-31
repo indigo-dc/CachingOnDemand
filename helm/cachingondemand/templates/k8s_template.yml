@@ -1,9 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcache-server-service
+spec:
+  type: NodePort
+  selector:
+    app: xcache
+  ports:
+  - protocol: TCP
+    name: xrootd
+    port: 32294
+    targetPort: 32294
+    nodePort: {{ .Values.cache.xrdport }}
+  - protocol: TCP
+    name: cmsd
+    port: 31113
+    targetPort: 31113
+    nodePort: {{ .Values.cache.cmsport }}
+  # TODO: integrate auth
+  #- protocol: TCP
+  #  name: http
+  #  port: 8800
+  #  targetPort: 8080
+  #  nodePort: {{ .Values.cache.http_port }}
+  externalIPs:
+  - "{{ .Values.cache.external_ip }}"
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: xcache-service
+  name: xcache-redir-service
 spec:
   type: NodePort
   selector:
@@ -13,12 +40,14 @@ spec:
     name: xrootd
     port: 1094
     targetPort: 1094
-    nodePort: 31094
+    nodePort: {{ .Values.cache.xrdport }}
   - protocol: TCP
     name: cmsd
     port: 31213
     targetPort: 31213
-    nodePort: 31213
+    nodePort: {{ .Values.cache.cmsport }}
+  externalIPs:
+  - "{{ .Values.cache.external_ip }}"
 ---
 kind: Service
 apiVersion: v1
@@ -79,7 +108,7 @@ spec:
     matchLabels:
       app: xredir
 
-  replicas: 1
+  replicas: {{ .Values.redirector.replicas }}
 
 ---
 
@@ -144,10 +173,17 @@ spec:
       volumes:
       - name: xcache-data
         hostPath:
-          path: {{ .Values.cache.cache_host_path }}
+          path: /root
       - name: xcache-creds
         hostPath:
-          path: /tmp 
+          path: /tmp
+      - name: vomses
+        hostPath:
+          path: /etc/vomses
+      - name: certs
+        secret:
+          secretName: certs
+          defaultMode: 256
       containers:
       - name: cache
         imagePullPolicy: Always
@@ -180,7 +216,7 @@ spec:
           value: "{{ .Values.cache.redir_host }}"
         - name: STREAMS
           value: "{{ .Values.cache.streams }}"
-        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        image: "{{ .Values.cache.http_port }}:{{ .Values.cache.tag }}"
         volumeMounts:
         - mountPath: /data/xrd
           name: xcache-data
@@ -198,18 +234,24 @@ spec:
         ports:
         - containerPort: 32294
         - containerPort: 31113
-      ## WAITING FOR CMS VOMS TTS solution
-      # - name: proxy
-      #   imagePullPolicy: Always
-      #   image: cloudpg/get-proxy
-      #   env:
-      #   - name: PROXY_URL
-      #     value: " tts_url "
-      #   - name: PROXY_token
-      #     value: "iam_token "
-      #   volumeMounts:
-      #   - mountPath: /tmp/
-      #     name: xcache-creds
+        - containerPort: 8080
+
+      ## WAITING FOR VOMS TTS solution
+      - name: renew
+        args:
+          - --renew
+          - --vo "{{ .Values.cache.vo }}"
+        imagePullPolicy: Always
+        image: cloudpg/proxy-renewal
+        volumeMounts:
+        - name: xcache-creds
+          mountPath: /tmp/
+        - name: vomses
+          mountPath: /etc/vomses
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
+
       #   livenessProbe:
       #     exec:
       #       command:
