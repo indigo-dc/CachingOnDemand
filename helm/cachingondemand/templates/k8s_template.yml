@@ -9,12 +9,12 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
-    port: 65534
+    port: {{ .Values.cache.xrdport }}
     targetPort: 32294
     nodePort: {{ .Values.cache.xrdport }}
   - protocol: TCP
     name: cmsd
-    port: 65533
+    port: {{ .Values.cache.cmsport }}
     targetPort: 31113
     nodePort: {{ .Values.cache.cmsport }}
   # TODO: integrate auth
@@ -38,12 +38,12 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
-    port: 65532
+    port: {{ .Values.redirector.xrdport }}
     targetPort: 1094
     nodePort: {{ .Values.redirector.xrdport }}
   - protocol: TCP
     name: cmsd
-    port: 65531
+    port: {{ .Values.redirector.cmsport }}
     targetPort: 31213
     nodePort: {{ .Values.redirector.cmsport }}
   externalIPs:
@@ -60,7 +60,7 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
-    port: 65530
+    port: {{ .Values.proxy.xrdport }}
     targetPort: 1194
     nodePort: {{ .Values.proxy.xrdport }}
   externalIPs:
@@ -211,7 +211,7 @@ spec:
         - name: ORIGIN_XRD_PORT
           value: "{{ .Values.cache.origin_xrd_port }}"
         - name: REDIR_CMSD_PORT
-          value: "31213"
+          value: "{{ .Values.redirector.cmsport }}"
         - name: REDIR_HOST
           value: "{{ .Values.cache.redir_host }}"
         - name: STREAMS

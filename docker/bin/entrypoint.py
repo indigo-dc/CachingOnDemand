@@ -97,12 +97,23 @@ if __name__ == "__main__":
 
     if not args.nogrid:
         logging.info("Intalling certificates...")
+        
+        command = "/opt/xrd_proxy/install_ca.sh"
         try:
-            subprocess.check_output("/opt/xrd_proxy/install_ca.sh", stderr=subprocess.STDOUT, shell=True)
-        except subprocess.CalledProcessError as ex:
-            logging.warn("WARNING: failed to install CAs: \n %s" % ex.output)
+            proc = subprocess.Popen(command, shell=True)
+        except ValueError as ex:
+            logging.error("ERROR: when retrieving certificates: %s \n %s" % (ex.args, ex.message))
 
-        logging.info("Intalling CAs... - DONE")
+        (output, err) = proc.communicate()  
+        p_status = proc.wait()
+
+        if err:
+            logging.error(err)
+            sys.exit(1)
+        if output:
+            logging.info("Command output: " + output)
+        
+        logging.info("Intalling CAs DONE")
 
     check_env()
     if args.config:
@@ -119,6 +130,7 @@ if __name__ == "__main__":
                 command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -voms %s -out /tmp/proxy" % args.vo
             else:
                 command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -out /tmp/proxy"
+            logging.info("Command: " + command)
             try:
                 proc = subprocess.Popen(command, shell=True)
             except ValueError as ex:
@@ -127,6 +139,8 @@ if __name__ == "__main__":
 
             (output, err) = proc.communicate()  
             p_status = proc.wait()
+
+            logging.info("Executed.")
 
             if err:
                 logging.error(err)
@@ -149,7 +163,9 @@ if __name__ == "__main__":
                 sys.exit(1)
             if output:
                 logging.info("Command output: " + output)
-            time.sleep(3600)
+
+
+            time.sleep(30)
             try:
                 subprocess.check_output("/opt/xrd_proxy/install_ca.sh", stderr=subprocess.STDOUT, shell=True)
             except subprocess.CalledProcessError as ex:
