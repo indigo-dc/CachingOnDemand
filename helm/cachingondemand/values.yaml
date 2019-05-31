@@ -5,9 +5,9 @@
 replicaCount: 1
 
 cache:
-  repository: cloudpg/xrootd-proxy
-  tag: cms
-  redir_host: xcache-service.default.svc.cluster.local
+  repository: cloudpg/cachingondemand
+  tag: helm-demo
+  redir_host: xcache-redir-service.default.svc.cluster.local
   replicas: 1
   cache_host_path: /data/xrd
   block_size: 512k
@@ -15,19 +15,28 @@ cache:
   high_wm: 0.95
   low_wm: 0.80
   n_prefetch: 1
-  origin_host: cms-xrootd.infn.it
+  origin_host: xrootd-cms.infn.it
   origin_xrd_port: 1094
-  streams: 256k
+  xrdport: 31494
+  cmsport: 31113
+  streams: 256
+  external_ip: 192.168.0.123
+  vo: ""
+  http_port: 8080
 
 redirector:
-  repository: cloudpg/xrootd-proxy
-  tag: cms
+  repository: cloudpg/cachingondemand
+  tag: helm-demo
+  replicas: 1
+  xrdport: 31294
+  cmsport: 31213
 
 proxy:
-  repository: cloudpg/xrootd-proxy
-  tag: cms
+  repository: cloudpg/cachingondemand
+  tag: helm-demo
   replicas: 1
   external_ip: 192.168.0.123
+  xrdport: 31394
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

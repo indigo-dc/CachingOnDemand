@@ -6,6 +6,7 @@ import logging
 import os.path
 import subprocess
 import sys
+import time
 
 from flask import Flask
 
@@ -22,8 +23,11 @@ group = parser.add_mutually_exclusive_group(required=True)
 group.add_argument('-P', '--proxy', help='XrootD proxy file cache mode', action="store_true")
 group.add_argument('-R', '--redirector', help='XrootD cache redirector mode', action="store_true")
 group.add_argument('-E', '--expose', help='cache expose mode', action="store_true")
+group.add_argument('--renew', help='proxy renew mode', action="store_true")
 group.add_argument('--config', help='XrootD config file path')
 
+parser.add_argument('--vo', help='VO')
+parser.add_argument('--nogsi', help='avoid client cache gsi auth', action="store_true")
 parser.add_argument('--nogrid', help='avoid grid CAs installation', action="store_true")
 parser.add_argument('--health_port', help='port for healthcheck listening', type=int, default=80)
 
@@ -83,11 +87,7 @@ def check_health():
                     logging.debug('%s: \n %s' % (log_path, fin.read()))
         return "1"
     else:
-        logging.info("It's all good! Checking certificate timeleft now")
-        try:
-            subprocess.check_output("/opt/xrd_proxy/refresh_cert.sh", stderr=subprocess.STDOUT, shell=True)
-        except subprocess.CalledProcessError as ex:
-            logging.warn("WARNING: failed to install CAs: \n %s" % ex.output)
+        logging.info("It's all good!")
         return "0"
 
 
@@ -97,12 +97,23 @@ if __name__ == "__main__":
 
     if not args.nogrid:
         logging.info("Intalling certificates...")
-        #try:
-        #    subprocess.check_output("/opt/xrd_proxy/install_ca.sh", stderr=subprocess.STDOUT, shell=True)
-        #except subprocess.CalledProcessError as ex:
-        #    logging.warn("WARNING: failed to install CAs: \n %s" % ex.output)
+        
+        command = "/opt/xrd_proxy/install_ca.sh"
+        try:
+            proc = subprocess.Popen(command, shell=True)
+        except ValueError as ex:
+            logging.error("ERROR: when retrieving certificates: %s \n %s" % (ex.args, ex.message))
 
-        logging.info("Intalling CAs... - DONE")
+        (output, err) = proc.communicate()  
+        p_status = proc.wait()
+
+        if err:
+            logging.error(err)
+            sys.exit(1)
+        if output:
+            logging.info("Command output: " + output)
+        
+        logging.info("Intalling CAs DONE")
 
     check_env()
     if args.config:
@@ -113,8 +124,57 @@ if __name__ == "__main__":
         DEFAULT_CONFIG = "/etc/xrootd/xrd_redirector_env.conf"
     if args.expose:
         DEFAULT_CONFIG = "/etc/xrootd/xrd_proxy_env.conf"
+    if args.renew:
+        while True:
+            if args.vo:
+                command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -voms %s -out /tmp/proxy" % args.vo
+            else:
+                command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -out /tmp/proxy"
+            logging.info("Command: " + command)
+            try:
+                proc = subprocess.Popen(command, shell=True)
+            except ValueError as ex:
+                logging.error("ERROR: when launching renew proxy: %s \n %s" % (ex.args, ex.message))
+                sys.exit(1)
+
+            (output, err) = proc.communicate()  
+            p_status = proc.wait()
+
+            logging.info("Executed.")
+
+            if err:
+                logging.error(err)
+                sys.exit(1)
+            if output:
+                logging.info("Command output: " + output)
+
+            command = "sudo cp /tmp/proxy /tmp/x509up_u998 && sudo chown -R xrootd:xrootd /tmp/x509up_u998"
+            try:
+                proc = subprocess.Popen(command, shell=True)
+            except ValueError as ex:
+                logging.error("ERROR: when launching renew proxy: %s \n %s" % (ex.args, ex.message))
+                sys.exit(1)
+            
+            (output, err) = proc.communicate()  
+            p_status = proc.wait()
+
+            if err:
+                logging.error(err)
+                sys.exit(1)
+            if output:
+                logging.info("Command output: " + output)
+
+
+            time.sleep(3600)
+            try:
+                subprocess.check_output("/opt/xrd_proxy/install_ca.sh", stderr=subprocess.STDOUT, shell=True)
+            except subprocess.CalledProcessError as ex:
+                logging.warn("WARNING: failed to install CAs: \n %s" % ex.output)
 
     logging.info("Using configuration file: %s" % DEFAULT_CONFIG)
+
+    if args.nogsi:
+        DEFAULT_CONFIG = "/etc/xrootd/xrd_cache_env_no-gsi.conf"
 
     if not args.expose:
         cmsd_command = "sudo -E -u xrootd /usr/bin/cmsd -k 3 -l /var/log/xrootd/cmsd.log -c " + DEFAULT_CONFIG

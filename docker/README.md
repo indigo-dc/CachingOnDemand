@@ -1,10 +1,8 @@
 # USAGE
-You can at the [official XrootD documentation](http://xrootd.org/docs.html) for detailed information about the tool:
-* [basic configuration](http://xrootd.org/doc/dev47/xrd_config.htm)
-* [cmsd configuration](http://xrootd.org/doc/dev45/cms_config.htm)
-* [proxy file cache](http://xrootd.org/doc/dev47/pss_config.htm)
+
 ## Available options
 
+* `--nogsi`: avoid client server gsi auth
 * `--nogrid`: avoid WLCG CAs installation
 * `--health_port`: port for healthcheck process listening, type=int, default=80
 * `--config`: specify xrootd config file

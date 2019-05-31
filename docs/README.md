@@ -2,7 +2,9 @@
 
 ## What's XCache
 
-You can look at the [official XrootD documentation](http://xrootd.org/docs.html) for detailed information about the tool:
+XCache description is available in this article [here](https://iopscience.iop.org/article/10.1088/1742-6596/513/4/042044/pdf).
+
+You can look at the [official XrootD documentation](http://xrootd.org/docs.html) for detailed information about the XRootD tool:
 
 * [basic configuration](http://xrootd.org/doc/dev47/xrd_config.htm)
 * [cmsd configuration](http://xrootd.org/doc/dev45/cms_config.htm)
@@ -10,7 +12,30 @@ You can look at the [official XrootD documentation](http://xrootd.org/docs.html)
 
 ## XCache components
 
-Please find an overview description of the architecture in [this presentation](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docs/XDC-AH_%20Distributed%20cache%20with%20XRootD.pdf)
+The setup infrastructure is shown in Fig. B8, where the clients that run the payload can be instructed to request data to a cache system deployed on the same cloud provider and thus with low latency. The cache stack consists in:
+a proxy server to function as bridge between the private network of the cache and the client. This server will simply tunnel the request from cache servers.
+a cache redirector for federating each cache server deployed. If a new server is added, it will be automatically configured to contact this redirector for registration
+a configurable number of cache servers, the core of the tool that are responsibles for reading-ahead from remote site while caching.
+
+![Schema of the components deployed for using a caching on-demand system on cloud resources](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docs/img/arch.png)
+
+This setup has been tested on different cloud providers. It is also been tested at a scale of 2k concurrent jobs on Open Telekom Cloud resources in the context of HelixNebulaScience Cloud [6] project.
+In the context of the eXtreme Data-Cloud project [7], a collection of recipes have been produced for the automatic deployment of a cache service on demand using different automation technology. For bare metal installation an Ansible [8] playbook is available that can deploy either directly on host or through docker container the whole stack. For those who use docker swarm for container orchestration a docker-compose [9] recipe is also available as for Kubernetes where an Helm [10] chart is provided. All these solutions have been integrated in DODAS [11] and thus with very few changes the same setup can be automatically replicated in different kind of cloud resources.
+
+### On-demand XCache deployment with docker compose
+
+Please follow the instruction [here](DOCKER.md)
+
+### Deployment on Kubernetes with Helm
+
+```bash
+helm init --upgrade
+helm repo add cloudpg https://cloud-pg.github.io/CachingOnDemand/
+helm repo update
+helm install -n cache-cluster cloudpg/cachingondemand
+```
+
+More details in this [demo](demo/DEMO.md)
 
 ## Ansible deployment
 
@@ -21,7 +46,7 @@ Please find an overview description of the architecture in [this presentation](h
 * valid CMS /etc/vomses
 * Port: one open service port
 * Valid grid host certifate
-* Valid service certificate that is able to read from AAA (/etc/grid-security/xrd/xrdcert.pem, /etc/grid-security/xrd/xrdkey.pem)
+* Valid service certificate that is able to read from remote origin (to be stored in /etc/grid-security/xrd/xrdcert.pem, /etc/grid-security/xrd/xrdkey.pem)
 
 ### Role Variables
 
@@ -58,40 +83,8 @@ elastic_password: testpass # elasticsearch password
 
 [https://xcache.readthedocs.io/en/latest/automated-grid.html](https://xcache.readthedocs.io/en/latest/automated-grid.html)
 
-## Deployment with Docker
 
-[https://hub.docker.com/r/cloudpg/xrootd-proxy/](https://hub.docker.com/r/cloudpg/xrootd-proxy/)
-
-### On-demand XCache docker image
-
-Please find the Dockerfile in this repository [here](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docker/Dockerfile)
-
-To personalize and build your own image, just apply you changes in the Dockerfile and run:
-
-``` bash
-docker build . -t my_image
-```
-
-### Deploy a cluster with docker compose
-
-If you want to try a demo deployment with docker compose, you can do it with the compose file [here](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docker/docker-compose.yml)
-
-## Deployment on Kubernetes
-
-### Components recipe
-
-Please take a look at the demonstration presented [here](https://cloud-pg.github.io/XDC-AH-demo). That will guide you through a step by step deployment of a cache cluster in K8s.
-
-### Deployment with Helm
-
-```bash
-helm init --upgrade
-helm repo add  cloudpg https://dodas-ts.github.io/docker-img_cms/
-helm repo update
-helm install cloudpg/cachingondemand
-```
-
-## TOSCA description files for PaaS orchestration
+## Deployment with DODAS
 
 - [Kubernetes cluster](https://github.com/Cloud-PG/CachingOnDemand/blob/master/toscaTemplates/DODAS-TS/kube_deploy.yml)
   - [Kubernetes deployment charts](https://github.com/Cloud-PG/CachingOnDemand/tree/master/toscaTemplates/k8s)

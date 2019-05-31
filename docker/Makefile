@@ -1,4 +1,4 @@
-VERSION=`git describe --tags`
+VERSION ?= `git describe --tags`
 
 NS ?= cloudpg
 IMAGE_NAME ?= cachingondemand
@@ -13,6 +13,7 @@ all: help
 help:
 	@echo "Available commands:\n"
 	@echo "- build			: "
+	@echo "- build-doc		:"
 	@echo "- compile-plugins	: "
 	@echo "- build-no-plugin	: "
 	@echo "- push			: "
@@ -29,6 +30,9 @@ help:
 
 build: Dockerfile
 	docker build --target plugin_server -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
+
+build-doc:
+	pip install mkdocs mkdocs-material
 
 compile-plugins: Dockerfile
 	docker build --target plugins -t $(NS)/$(IMAGE_NAME):plugins -f Dockerfile .

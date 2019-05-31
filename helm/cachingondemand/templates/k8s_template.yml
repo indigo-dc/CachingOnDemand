@@ -1,9 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcache-server-service
+spec:
+  type: ClusterIP
+  selector:
+    app: xcache
+  ports:
+  - protocol: TCP
+    name: xrootd
+    port: {{ .Values.cache.xrdport }}
+    targetPort: 32294
+    #nodePort: {{ .Values.cache.xrdport }}
+  - protocol: TCP
+    name: cmsd
+    port: {{ .Values.cache.cmsport }}
+    targetPort: 31113
+    #nodePort: {{ .Values.cache.cmsport }}
+  # TODO: integrate auth
+  #- protocol: TCP
+  #  name: http
+  #  port: 8800
+  #  targetPort: 8080
+  #  nodePort: {{ .Values.cache.http_port }}
+  externalIPs:
+  - "{{ .Values.cache.external_ip }}"
 
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: xcache-service
+  name: xcache-redir-service
 spec:
   type: NodePort
   selector:
@@ -11,14 +38,16 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
-    port: 1094
+    port: {{ .Values.redirector.xrdport }}
     targetPort: 1094
-    nodePort: 31094
+    nodePort: {{ .Values.redirector.xrdport }}
   - protocol: TCP
     name: cmsd
-    port: 31213
+    port: {{ .Values.redirector.cmsport }}
     targetPort: 31213
-    nodePort: 31213
+    nodePort: {{ .Values.redirector.cmsport }}
+  externalIPs:
+  - "{{ .Values.cache.external_ip }}"
 ---
 kind: Service
 apiVersion: v1
@@ -31,9 +60,9 @@ spec:
   ports:
   - protocol: TCP
     name: xrootd
-    port: 1194
+    port: {{ .Values.proxy.xrdport }}
     targetPort: 1194
-    nodePort: 31194
+    nodePort: {{ .Values.proxy.xrdport }}
   externalIPs:
   - "{{ .Values.proxy.external_ip }}"
 ---
@@ -79,7 +108,7 @@ spec:
     matchLabels:
       app: xredir
 
-  replicas: 1
+  replicas: {{ .Values.redirector.replicas }}
 
 ---
 
@@ -144,10 +173,17 @@ spec:
       volumes:
       - name: xcache-data
         hostPath:
-          path: {{ .Values.cache.cache_host_path }}
+          path: /root
       - name: xcache-creds
         hostPath:
-          path: /tmp 
+          path: /tmp
+      - name: vomses
+        configMap:
+          name: vomses-config
+      - name: certs
+        secret:
+          secretName: certs
+          defaultMode: 256
       containers:
       - name: cache
         imagePullPolicy: Always
@@ -175,7 +211,7 @@ spec:
         - name: ORIGIN_XRD_PORT
           value: "{{ .Values.cache.origin_xrd_port }}"
         - name: REDIR_CMSD_PORT
-          value: "31213"
+          value: "{{ .Values.redirector.cmsport }}"
         - name: REDIR_HOST
           value: "{{ .Values.cache.redir_host }}"
         - name: STREAMS
@@ -187,6 +223,9 @@ spec:
         ## WAITING FOR CMS VOMS TTS solution
         - mountPath: /tmp/
           name: xcache-creds
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
         livenessProbe:
           exec:
             command:
@@ -198,18 +237,26 @@ spec:
         ports:
         - containerPort: 32294
         - containerPort: 31113
-      ## WAITING FOR CMS VOMS TTS solution
-      # - name: proxy
-      #   imagePullPolicy: Always
-      #   image: cloudpg/get-proxy
-      #   env:
-      #   - name: PROXY_URL
-      #     value: " tts_url "
-      #   - name: PROXY_token
-      #     value: "iam_token "
-      #   volumeMounts:
-      #   - mountPath: /tmp/
-      #     name: xcache-creds
+        - containerPort: 8080
+
+      ## WAITING FOR VOMS TTS solution
+      - name: renew
+        args:
+          - --renew
+          - --vo 
+          - "{{ .Values.cache.vo }}"
+        imagePullPolicy: Always
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        volumeMounts:
+        - name: xcache-creds
+          mountPath: /tmp/
+        - name: vomses
+          mountPath: /etc/vomses
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
+
+
       #   livenessProbe:
       #     exec:
       #       command:

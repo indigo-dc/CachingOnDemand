@@ -1,0 +1,11 @@
+site_name: Caching On Demand
+theme:
+  name: material
+  palette:
+    primary: 'Deep Purple'
+    accent: 'Green'
+nav:
+- Home: 'README.md'
+- Quick Start (Docker): 'DOCKER.md'
+- Demo on K8s with Heml: 'demo/DEMO.md'
+- Github repo: 'https://github.com/Cloud-PG/CachingOnDemand'
