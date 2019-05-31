@@ -62,7 +62,7 @@ spec:
     name: xrootd
     port: 65530
     targetPort: 1194
-    nodePort: 31194
+    nodePort: {{ .Values.proxy.xrdport }}
   externalIPs:
   - "{{ .Values.proxy.external_ip }}"
 ---

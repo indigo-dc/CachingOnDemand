@@ -20,15 +20,14 @@ cache:
   xrdport: 31194
   cmsport: 31113
   streams: 256
-  replicas: 1
   external_ip: 192.168.0.123
   vo: cms
   http_port: 8080
 
 redirector:
   repository: cloudpg/cachingondemand
-  tag: cms
-  replicas: helm
+  tag: helm
+  replicas: 1
   xrdport: 31094
   cmsport: 31213
 
@@ -37,6 +36,7 @@ proxy:
   tag: helm
   replicas: 1
   external_ip: 192.168.0.123
+  xrdport: 31394
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
