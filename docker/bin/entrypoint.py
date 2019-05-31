@@ -87,11 +87,7 @@ def check_health():
                     logging.debug('%s: \n %s' % (log_path, fin.read()))
         return "1"
     else:
-        logging.info("It's all good! Checking certificate timeleft now")
-        try:
-            subprocess.check_output("/opt/xrd_proxy/refresh_cert.sh", stderr=subprocess.STDOUT, shell=True)
-        except subprocess.CalledProcessError as ex:
-            logging.warn("WARNING: failed to install CAs: \n %s" % ex.output)
+        logging.info("It's all good!")
         return "0"
 
 
@@ -120,9 +116,9 @@ if __name__ == "__main__":
     if args.renew:
         while True:
             if args.vo:
-                command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert.pem --key /etc/grid-security/xrd/key.pem -voms %s -out /tmp/proxy" % args.vo
+                command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -voms %s -out /tmp/proxy" % args.vo
             else:
-                command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert.pem --key /etc/grid-security/xrd/key.pem -out /tmp/proxy"
+                command = "sudo voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -out /tmp/proxy"
             try:
                 proc = subprocess.Popen(command, shell=True)
             except ValueError as ex:

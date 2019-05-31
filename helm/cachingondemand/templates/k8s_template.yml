@@ -178,8 +178,8 @@ spec:
         hostPath:
           path: /tmp
       - name: vomses
-        hostPath:
-          path: /etc/vomses
+        configMap:
+          name: vomses-config
       - name: certs
         secret:
           secretName: certs
@@ -252,6 +252,7 @@ spec:
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
+
 
       #   livenessProbe:
       #     exec:
