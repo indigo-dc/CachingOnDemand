@@ -25,8 +25,8 @@ group.add_argument('-R', '--redirector', help='XrootD cache redirector mode', ac
 group.add_argument('-E', '--expose', help='cache expose mode', action="store_true")
 group.add_argument('--renew', help='proxy renew mode', action="store_true")
 group.add_argument('--config', help='XrootD config file path')
-group.add_argument('--vo', help='VO')
 
+parser.add_argument('--vo', help='VO')
 parser.add_argument('--nogsi', help='avoid client cache gsi auth', action="store_true")
 parser.add_argument('--nogrid', help='avoid grid CAs installation', action="store_true")
 parser.add_argument('--health_port', help='port for healthcheck listening', type=int, default=80)

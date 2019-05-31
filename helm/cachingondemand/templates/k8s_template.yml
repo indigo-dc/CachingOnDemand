@@ -240,7 +240,8 @@ spec:
       - name: renew
         args:
           - --renew
-          - --vo "{{ .Values.cache.vo }}"
+          - --vo 
+          - "{{ .Values.cache.vo }}"
         imagePullPolicy: Always
         image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
         volumeMounts:
