@@ -28,6 +28,7 @@ sudo docker run --rm --privileged -p 32294:32294 -p 31113:31113 -v $PWD/config:/
 * File saved will be put on /data/xrd, so you may want to mount your storage backend there
 
 An health check is available on:
+
 ```bash
 # response 0 everything running, response 1 something went wrong
 curl <container_ip>/check_health
@@ -45,14 +46,16 @@ Then run use the docker-compose.yml file provided to bring up locally:
 * a file cache redirector with config in config/xrd_test-redir.conf
 
 The command for bringing the full stack up is:
-```
+
+```bash
 git clone https://github.com/Cloud-PG/cachingondemand.git
 cd cachingondemand/docker
 /usr/local/bin/docker-compose up -d
 ```
 
 To shutdown the stack:
-```
+
+```bash
 /usr/local/bin/docker-compose down
 ```
 

@@ -1,16 +1,16 @@
 # DEPLOY CACHINGONDEMAND STACK ON K8S
 
-## REQUIREMENTS
+## Requirements
 
 For part 1:
 
-- Docker
-- Docker compose
+- [Docker](https://docs.docker.com/install/)
+- [Docker compose](https://docs.docker.com/compose/install/)
 
 For part 2:
 
 - [k8s Docker in Docker](https://github.com/kubernetes-sigs/kubeadm-dind-cluster)
-- `kubectl` and `helm` installed on the local machine
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) and [helm](https://helm.sh/docs/using_helm/#installing-helm) installed on the local machine
 - remote xrootd host to connect to
 - service certificate authorized to read from remote xrootd host
   - kept on your local machine as user{cert,key}.pem
@@ -19,13 +19,13 @@ For part 2:
 
 ## PART 1
 
-### PLAYGROUND WITH DOCKER AND DOCKER COMPOSE
+### Playground with Docker and Docker Compose
 
 Please follow the instruction [here](../DOCKER.md)
 
 ## PART 2
 
-### START A LOCAL KUBERNETES CLUSTER
+### Start a local Kubernetes cluster
 
 Let's start a k8s cluster locally with 4 nodes:
 
@@ -55,11 +55,18 @@ Now your kube config file has been update so you should be able to query the clu
 kubectl get node
 ```
 
-### AUTH N/Z MODEL IN XCACHE
+### AuthN/Z mode in XCache
 
-![Schema of AuthN/Z for caching on-demand system](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docs/img/xcache_auth.png)
+![Schema of AuthN/Z for caching on-demand system](../img/xcache_auth.png)
 
-### STORE CERTIFICATES IN K8S SECRETS
+1. The client show its identity only to the cache server
+2. The cache server will check in its local mapfile if the client is allowed to read the requested namespace
+3. If that is the case the cache server will server the file from its disk if already cached or it will use its own certificate (robot/service/power user as needed) to authenticate with the remote storage for the reading process
+4. The remote storage check its own mapfile if the robot/service/power user certificate is allowed to read from that namespace.
+
+__N.B.__ a procedure to use a user proxy forwarding approach is available but not recomended for security reasons.
+
+### Store certificates in K8S secrets
 
 Certificates can be saved on k8s and made available to all the cache server with this command:
 
@@ -67,7 +74,7 @@ Certificates can be saved on k8s and made available to all the cache server with
 kubectl create secret generic certs --from-file=cert.pem=$PWD/usercert.pem --from-file=key.pem=$PWD/userkey.pem
 ```
 
-For more details about k8s secrets please visit [this page]()
+For more details about k8s secrets please visit [this page](https://kubernetes.io/docs/concepts/configuration/secret/)
 
 ### STORE VOMSES IN CONFIGMAP
 
@@ -77,7 +84,7 @@ Vomses can be saved on k8s and made available to all the cache server with this 
 kubectl create configmap vomses-config --from-file=vomses/
 ```
 
-For more details about k8s configMaps please visit [this page]()
+For more details about k8s configMaps please visit [this page](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
 
 ### INSTALL HELM AND CACHINGONDEMAND REPOSITORY
 
@@ -129,6 +136,10 @@ proxy:
   xrdport: 31394
 ```
 
+The default recipe will try to deploy the caching form in the following architecture.
+
+![Schema of the components deployed for using a caching on-demand system on cloud resources](../img/xcache_k8s.png)
+
 ### DEPLOY THE CLUSTER
 
 Let's use the default parameters for now (by default working with CMS remote end point):
@@ -170,9 +181,5 @@ xcache-pod-74b94865b4-tlmgb  0/2    ContainerCreating  0         0s
 
 ### TEST THE FUNCTIONALITIES
 
-### CUSTOMIZE THE DEPLOYMENT
-
-#### CachingOnDemand Helm values
-
-### STANDALONE CACHE SERVER EXAMPLE
+### CUSTOMIZE THE DEPLOYMENT: STANDALONE CACHE SERVER EXAMPLE
 
