@@ -17,7 +17,7 @@ sudo add-apt-repository \
 sudo apt-get update
 
 sudo groupadd docker
-usermod -aG docker $USER
+sudo usermod -aG docker $USER
 
 sudo apt-get install -y --allow-unauthenticated docker-ce docker-ce-cli containerd.io
 
