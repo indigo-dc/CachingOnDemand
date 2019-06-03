@@ -170,7 +170,9 @@ xcache-pod-74b94865b4-tlmgb  0/2    ContainerCreating  0         0s
 
 ### TEST THE FUNCTIONALITIES
 
-
 ### CUSTOMIZE THE DEPLOYMENT
 
+#### CachingOnDemand Helm values
+
 ### STANDALONE CACHE SERVER EXAMPLE
+

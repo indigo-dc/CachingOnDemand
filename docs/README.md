@@ -37,6 +37,10 @@ helm install -n cache-cluster cloudpg/cachingondemand
 
 More details in this [demo](demo/DEMO.md)
 
+## Deployment with DODAS
+
+A guided demo is available [here](demo/DODAS.md)
+
 ## Ansible deployment
 
 ### Requirements
@@ -82,11 +86,3 @@ elastic_password: testpass # elasticsearch password
 ### Deployment example: CMS XCache
 
 [https://xcache.readthedocs.io/en/latest/automated-grid.html](https://xcache.readthedocs.io/en/latest/automated-grid.html)
-
-
-## Deployment with DODAS
-
-- [Kubernetes cluster](https://github.com/Cloud-PG/CachingOnDemand/blob/master/toscaTemplates/DODAS-TS/kube_deploy.yml)
-  - [Kubernetes deployment charts](https://github.com/Cloud-PG/CachingOnDemand/tree/master/toscaTemplates/k8s)
-- [Real case example: TOSCA template for XCache in CMS experiment with Marathon](https://github.com/Cloud-PG/CachingOnDemand/blob/master/toscaTemplates/DODAS-TS/cms_marathon_cluster.yml)
-
