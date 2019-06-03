@@ -42,6 +42,8 @@ sudo curl -L https://git.io/get_helm.sh | bash
 mkdir /home/vagrant/.kube
 touch /home/vagrant/.kube/config
 
-NUM_NODES=3 k8s-dind up
+sudo chown -R vagrant:vagrant /home/vagrant/.kube
+
+sudo -u vagrant NUM_NODES=3 k8s-dind up
 
 helm init
