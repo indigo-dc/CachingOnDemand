@@ -12,15 +12,31 @@ You can look at the [official XrootD documentation](http://xrootd.org/docs.html)
 
 ## XCache components
 
-The setup infrastructure is shown in Fig. B8, where the clients that run the payload can be instructed to request data to a cache system deployed on the same cloud provider and thus with low latency. The cache stack consists in:
-a proxy server to function as bridge between the private network of the cache and the client. This server will simply tunnel the request from cache servers.
-a cache redirector for federating each cache server deployed. If a new server is added, it will be automatically configured to contact this redirector for registration
-a configurable number of cache servers, the core of the tool that are responsibles for reading-ahead from remote site while caching.
+The setup infrastructure is shown the figure below, where the clients that run the payload can be instructed to request data to a cache system deployed on the same cloud provider and thus with low latency. The cache stack consists in:
 
-![Schema of the components deployed for using a caching on-demand system on cloud resources](https://github.com/Cloud-PG/CachingOnDemand/blob/master/docs/img/arch.png)
+* __a proxy server__ to function as bridge between the private network of the cache and the client. This server will simply tunnel the request from cache servers.
+* __a cache redirector__ for federating each cache server deployed. If a new server is added, it will be automatically configured to contact this redirector for registration
+* __a configurable number of cache servers__, the core of the tool that are responsibles for reading-ahead from remote site while caching.
 
-This setup has been tested on different cloud providers. It is also been tested at a scale of 2k concurrent jobs on Open Telekom Cloud resources in the context of HelixNebulaScience Cloud [6] project.
-In the context of the eXtreme Data-Cloud project [7], a collection of recipes have been produced for the automatic deployment of a cache service on demand using different automation technology. For bare metal installation an Ansible [8] playbook is available that can deploy either directly on host or through docker container the whole stack. For those who use docker swarm for container orchestration a docker-compose [9] recipe is also available as for Kubernetes where an Helm [10] chart is provided. All these solutions have been integrated in DODAS [11] and thus with very few changes the same setup can be automatically replicated in different kind of cloud resources.
+![Schema of the components deployed for using a caching on-demand system on cloud resources](img/xcache_k8s.png)
+
+This setup has been tested on different cloud providers. It is also been tested at a scale of 2k concurrent jobs on Open Telekom Cloud resources in the context of [HelixNebulaScience Cloud](http://www.helix-nebula.eu/) project.
+In the context of the [eXtreme Data-Cloud project](http://www.extreme-datacloud.eu/), a collection of recipes have been produced for the automatic deployment of a cache service on demand using different automation technology. For bare metal installation an [Ansible](https://www.ansible.com/) playbook is available that can deploy either directly on host or through docker container the whole stack. For those who use docker swarm for container orchestration a [docker-compose](DOCKER.md) recipe is also available as for Kubernetes where an [Helm](demo/DEMO.md) chart is provided. All these solutions have been integrated in [DODAS](demo/DODAS.md) and thus with very few changes the same setup can be automatically replicated in different kind of cloud resources.
+
+### AuthN/Z mode in XCache
+
+![Schema of AuthN/Z for caching on-demand system](img/xcache_auth.png)
+
+1. The client show its identity only to the cache server
+2. The cache server will check in its local mapfile if the client is allowed to read the requested namespace
+3. If that is the case the cache server will server the file from its disk if already cached or it will use its own certificate (robot/service/power user as needed) to authenticate with the remote storage for the reading process
+4. The remote storage check its own mapfile if the robot/service/power user certificate is allowed to read from that namespace.
+
+__N.B.__ a procedure to use a user proxy forwarding approach is available but not recomended for security reasons.
+
+### AuthN/Z mode in XCache with OIDC
+
+Coming soon...
 
 ### On-demand XCache deployment with docker compose
 
@@ -36,6 +52,10 @@ helm install -n cache-cluster cloudpg/cachingondemand
 ```
 
 More details in this [demo](demo/DEMO.md)
+
+## Deployment with DODAS
+
+A guided demo is available [here](demo/DODAS.md)
 
 ## Ansible deployment
 
@@ -76,17 +96,9 @@ elastic_password: testpass # elasticsearch password
 - hosts: localhost
   remote_user: root
   roles:
-    - role: dciangot.xcache 
+    - role: cloudpg.cachingondemand
 ```
 
 ### Deployment example: CMS XCache
 
 [https://xcache.readthedocs.io/en/latest/automated-grid.html](https://xcache.readthedocs.io/en/latest/automated-grid.html)
-
-
-## Deployment with DODAS
-
-- [Kubernetes cluster](https://github.com/Cloud-PG/CachingOnDemand/blob/master/toscaTemplates/DODAS-TS/kube_deploy.yml)
-  - [Kubernetes deployment charts](https://github.com/Cloud-PG/CachingOnDemand/tree/master/toscaTemplates/k8s)
-- [Real case example: TOSCA template for XCache in CMS experiment with Marathon](https://github.com/Cloud-PG/CachingOnDemand/blob/master/toscaTemplates/DODAS-TS/cms_marathon_cluster.yml)
-
