@@ -39,8 +39,8 @@ sudo mv ./kubectl /usr/bin/kubectl
 
 sudo curl -L https://git.io/get_helm.sh | bash
 
-mkdir $HOME/.kube
-touch $HOME/.kube/config
+mkdir /home/vagrant/.kube
+touch /home/vagrant/.kube/config
 
 NUM_NODES=3 k8s-dind up
 
