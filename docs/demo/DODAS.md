@@ -4,7 +4,7 @@
 
 Please take a look at [this article](https://doi.org/10.22323/1.327.0024)
 
-## COMPONENTS
+## Components
 
 The following components will be intalled with the procedure presented below:
 
@@ -19,7 +19,7 @@ The following components will be intalled with the procedure presented below:
 - __Grafana server__:
   - for visualization of dashboard starting from data stored by prometheus
 
-## IM CLIENT AND DODAS TEMPLATE
+## IM client and DODAS template
 
 For a introduction and a quickstart guide for DODAS please see the [documentation page](https://dodas-ts.github.io/dodas-doc/).
 In this demo we will make use of the [IM python client](https://imdocs.readthedocs.io/en/devel/client.html).
@@ -40,33 +40,38 @@ Now this kind of deployment will automatize 2 macro steps:
 
 So let's take a look to the main feature of the TOSCA template and Helm configuration files.
 
-### TOSCA TEMPLATE
+### TOSCA template
 
 [Available on github](https://github.com/indigo-dc/tosca-templates/tree/k8s_cms/dodas/XCache-demo.yaml)
 
+
 ### CachingOnDemand Helm values
 
-[Available on github]()
+[Available on github](https://raw.githubusercontent.com/Cloud-PG/CachingOnDemand/master/helm/cachingondemand/values.yaml)
 
 ### Prometheus Helm values
 
-[Available on github]()
+[Available on github](https://raw.githubusercontent.com/indigo-dc/tosca-templates/k8s_cms/dodas/config/prom_values.yaml)
 
 ### Grafana Helm values
 
-[Available on github]()
+[Available on github](https://raw.githubusercontent.com/indigo-dc/tosca-templates/k8s_cms/dodas/config/grafana.yaml)
 
 
-## CREATE A CLUSTER WITH IM CLIENT
+## Create a cluster with IM client
 
+```bash
+wget https://github.com/indigo-dc/tosca-templates/tree/k8s_cms/dodas/XCache-demo.yaml
+im_client.py -a my_auth_file.dat create XCache-demo.yaml
+```
 
-## CREATE SECRETS AND CONFIGMAPS
+## Create K8s secrets and configmaps
 
+First log into the k8s master machine and copy there your certificates wherever you prefer e.g. 
 
+## Test functionalities
 
-## TEST FUNCTIONALITIES
-
-## MONITOR SYSTEM AND DUMMY DASHBOARD
+## Monitor system and dummy grafana dashboard
 
 
 # Future improvements

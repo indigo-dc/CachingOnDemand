@@ -76,7 +76,7 @@ kubectl create secret generic certs --from-file=cert.pem=$PWD/usercert.pem --fro
 
 For more details about k8s secrets please visit [this page](https://kubernetes.io/docs/concepts/configuration/secret/)
 
-### STORE VOMSES IN CONFIGMAP
+### Store vomses in configmap
 
 Vomses can be saved on k8s and made available to all the cache server with this command:
 
@@ -86,7 +86,7 @@ kubectl create configmap vomses-config --from-file=vomses/
 
 For more details about k8s configMaps please visit [this page](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
 
-### INSTALL HELM AND CACHINGONDEMAND REPOSITORY
+### Install Helm and Cachingondemand repository
 
 Initialize helm on the cluster and then install the CachingOnDemand repository.
 
@@ -96,7 +96,7 @@ helm repo add cloudpg https://cloud-pg.github.io/CachingOnDemand/
 helm repo update
 ```
 
-### TAKING A LOOK TO DEPLOYMENT PARAMETERS
+### Taking a look to deployments parameters
 
 The deployment can be tune using the Helm following parameters (either passing them via yaml file or via CLI).
 
@@ -140,7 +140,7 @@ The default recipe will try to deploy the caching form in the following architec
 
 ![Schema of the components deployed for using a caching on-demand system on cloud resources](../img/xcache_k8s.png)
 
-### DEPLOY THE CLUSTER
+### Deploy the cluster
 
 Let's use the default parameters for now (by default working with CMS remote end point):
 
@@ -177,9 +177,9 @@ xcache-pod-74b94865b4-tlmgb  0/2    ContainerCreating  0         0s
 
 ```
 
-### CHECK THE STATUS
+### Check the status
 
-### TEST THE FUNCTIONALITIES
+### Test the functionalities
 
-### CUSTOMIZE THE DEPLOYMENT: STANDALONE CACHE SERVER EXAMPLE
+### Customize the deployment: standalone cache server example
 
