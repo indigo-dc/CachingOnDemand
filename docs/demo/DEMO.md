@@ -2,6 +2,18 @@
 
 ## Requirements
 
+### VM with Vagrant
+
+If you have Vagrant installed or if you want to install it and to use it the following commands are enough to setup a working environment with everything you need for this demo:
+
+```bash
+git clone https://github.com/Cloud-PG/CachingOnDemand
+cd CachingOnDemand
+vagrant up
+```
+
+### Manual installation
+
 For part 1:
 
 - [Docker](https://docs.docker.com/install/)
