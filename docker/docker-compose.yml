@@ -55,14 +55,14 @@ services:
     expose:
       - "1194"
 
-  reporter:
-    image: "cloudpg/cachereport"
-    environment:
-      COLLECTOR_PORT: "1294"
-    networks:
-      - overlay
-    expose:
-      - "1294"
+  #reporter:
+  #  image: "cloudpg/cachereport"
+  #  environment:
+  #    COLLECTOR_PORT: "1294"
+  #  networks:
+  #    - overlay
+  #  expose:
+  #    - "1294"
 
   portainer:
     volumes:

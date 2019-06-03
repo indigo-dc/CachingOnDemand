@@ -44,6 +44,7 @@ Then run use the docker-compose.yml file provided to bring up locally:
 * an origin server with config in config/xrd_test_origin.conf
 * a file cache server with config in config/xrd_test.conf
 * a file cache redirector with config in config/xrd_test-redir.conf
+* a [portainer](https://www.portainer.io/) webUI for quickly debug and move throught the containers (available on `localhost:9000` once deployed)
 
 The command for bringing the full stack up is:
 
