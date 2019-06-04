@@ -191,11 +191,15 @@ xcache-pod-74b94865b4-tlmgb  0/2    ContainerCreating  0         0s
 
 ### Check the status
 
-If everthing went well, all the pods should be running:
+If everthing went well, all the pods should be running after a while (varying with your internet connectivity):
 
 ```bash
 $> kubectl get pod
 
+NAME                          READY   STATUS     RESTARTS   AGE
+proxy-pod-7ddbd957-rlndx      1/1     Running    0          16m
+xcache-pod-7c4dbd4667-9xhwt   3/3     Running    0          16m
+xredir-pod-696c4b764c-d7kjp   1/1     Running    0          16m
 
 ```
 
@@ -211,3 +215,24 @@ xrdcp -v -d2 -f root://cache:32294//myfile.root /dev/null
 
 ### Customize the deployment: standalone cache server example
 
+The deployment of a standalone cache is possible passing the following values file (values.yaml):
+
+```yaml
+
+cache:
+  redir_host: 0.0.0.0
+
+redirector:
+  replicas: 0
+  cmsport: 31113
+
+proxy:
+  replicas: 0
+
+```
+
+Then deploy the server with:
+
+```bash
+helm install -n cache-standalone cloudpg/cachingondemand --values values.yaml
+```
