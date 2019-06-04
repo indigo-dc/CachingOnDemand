@@ -50,4 +50,4 @@ helm init
 
 git clone https://github.com/Cloud-PG/CachingOnDemand
 
-cd CachingOnDemand
+sudo usermod -m -d /home/vagrant/CachingOnDemand vagrant
