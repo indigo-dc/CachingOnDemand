@@ -258,7 +258,8 @@ spec:
 
       - name: client
         imagePullPolicy: Always
-        command: /bin/bash
+        command: 
+        - /bin/bash
         imagePullPolicy: Always
         image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
         volumeMounts:
