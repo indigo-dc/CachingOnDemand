@@ -47,3 +47,7 @@ sudo chown -R vagrant:vagrant /home/vagrant/.kube
 sudo -u vagrant NUM_NODES=3 k8s-dind up
 
 helm init
+
+git clone https://github.com/Cloud-PG/CachingOnDemand
+
+cd CachingOnDemand

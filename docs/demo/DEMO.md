@@ -191,7 +191,23 @@ xcache-pod-74b94865b4-tlmgb  0/2    ContainerCreating  0         0s
 
 ### Check the status
 
+If everthing went well, all the pods should be running:
+
+```bash
+$> kubectl get pod
+
+
+```
+
 ### Test the functionalities
+
+Now you can log into the client docker and test if you are able to download a file from the remote server through the cache server.
+
+```bash
+kubectl exec -ti <xcache-pod ID> -c client bash
+export X509_USER_PROXY=/tmp/proxy
+xrdcp -v -d2 -f root://cache:32294//myfile.root /dev/null
+```
 
 ### Customize the deployment: standalone cache server example
 
