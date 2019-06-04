@@ -73,5 +73,9 @@ First log into the k8s master machine and copy there your certificates wherever 
 
 ## Monitor system and dummy grafana dashboard
 
+...
 
-# Future improvements
+## Future improvements
+
+- Manage K8s VolumeClaims for a dynamic and flexible storage management
+- Make possible to use the K8s ConfingMap for passing custom server configuration
