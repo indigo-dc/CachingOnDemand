@@ -3,11 +3,11 @@ entries:
   cachingondemand:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-06-21T12:14:17.091462113+02:00
+    created: 2019-06-21T13:46:46.709051011+02:00
     description: A Helm chart for the deployment of a XCache cluster
-    digest: c6a4feef2a568d8466beaf56ed3dbd89c0bea61297851d1cab02e90e3e0a51d8
+    digest: 652ef6f3bedc91796b0bc4cab9d647220b4b454d70025b84e38f2704dc64b20d
     name: cachingondemand
     urls:
     - https://cloud-pg.github.io/CachingOnDemand/cachingondemand-1.0.3.tgz
     version: 1.0.3
-generated: 2019-06-21T12:14:17.091181603+02:00
+generated: 2019-06-21T13:46:46.708708513+02:00
