@@ -168,6 +168,14 @@ spec:
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost/check_health
+          initialDelaySeconds: 300
+          periodSeconds: 6
           
   selector:
     matchLabels:
@@ -289,6 +297,14 @@ spec:
           readOnly: true
         - name: ca
           mountPath: "/etc/grid-security/certificates"
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost/check_health
+          initialDelaySeconds: 300
+          periodSeconds: 6
 
       # - name: client
       #   imagePullPolicy: Always
