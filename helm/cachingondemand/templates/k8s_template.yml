@@ -136,6 +136,7 @@ spec:
         - name: REDIR_XRD_PORT
           value: "{{ .Values.redirector.xrdport }}"
         image: "{{ .Values.proxy.repository }}:{{ .Values.proxy.tag }}" 
+        imagePullPolicy: Always
         volumeMounts:
         - name: ca
           mountPath: "/etc/grid-security/certificates"
@@ -246,6 +247,7 @@ spec:
         - name: STREAMS
           value: "{{ .Values.cache.streams }}"
         image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        imagePullPolicy: Always
         volumeMounts:
         - mountPath: /data/xrd
           name: xcache-data
