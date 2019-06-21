@@ -180,6 +180,10 @@ if __name__ == "__main__":
     if args.nogsi:
         DEFAULT_CONFIG = "/etc/xrootd/xrd_cache_env_no-gsi.conf"
 
+    logging.info("Waiting 5min for proxy and certs updates")
+    # Wait for proxy renew
+    time.sleep(300)
+
     if not args.expose:
         cmsd_command = "sudo -E -u xrootd /usr/bin/cmsd -k 3 -l /var/log/xrootd/cmsd.log -c " + DEFAULT_CONFIG
         logging.debug("Starting cmsd daemon: \n %s", cmsd_command)
