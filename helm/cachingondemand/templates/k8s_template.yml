@@ -120,16 +120,20 @@ spec:
         secret:
           secretName: certs
           defaultMode: 256
-      - name: ca
-        emptyDir: {}
       containers:
       - name: proxy
         imagePullPolicy: Always
         args:
-        - --nogrid
+        #- --nogrid
         - --expose
         - --health_port
         - "8080"
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:8080/check_health
         env:
         - name: REDIR_HOST
           value: "{{ .Values.cache.redir_host }}"
@@ -138,9 +142,6 @@ spec:
         image: "{{ .Values.proxy.repository }}:{{ .Values.proxy.tag }}" 
         imagePullPolicy: Always
         volumeMounts:
-        - name: ca
-          mountPath: "/etc/grid-security/certificates"
-          readOnly: true
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
@@ -165,8 +166,6 @@ spec:
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
-        - name: ca
-          mountPath: "/etc/grid-security/certificates"
           
   selector:
     matchLabels:
