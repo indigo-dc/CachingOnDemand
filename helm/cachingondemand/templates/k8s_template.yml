@@ -171,11 +171,12 @@ spec:
         livenessProbe:
           exec:
             command:
-            - curl
-            - -f
-            - http://localhost/check_health
+            - sudo
+            - -u
+            - xrootd
+            - voms-proxy-info
           initialDelaySeconds: 300
-          periodSeconds: 6
+          periodSeconds: 600
           
   selector:
     matchLabels:
@@ -300,11 +301,12 @@ spec:
         livenessProbe:
           exec:
             command:
-            - curl
-            - -f
-            - http://localhost/check_health
+            - sudo
+            - -u
+            - xrootd
+            - voms-proxy-info
           initialDelaySeconds: 300
-          periodSeconds: 6
+          periodSeconds: 600
 
       # - name: client
       #   imagePullPolicy: Always
