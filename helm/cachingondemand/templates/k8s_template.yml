@@ -220,13 +220,10 @@ spec:
         secret:
           secretName: certs
           defaultMode: 256
-      - name: ca
-        emptyDir: {}
       containers:
       - name: cache
         imagePullPolicy: Always
         args:
-        - --nogrid
         - --nogsi
         - --proxy
         - --health_port
@@ -264,9 +261,6 @@ spec:
         ## WAITING FOR CMS VOMS TTS solution
         - mountPath: /tmp/
           name: xcache-creds
-        - name: ca
-          mountPath: "/etc/grid-security/certificates"
-          readOnly: true
         livenessProbe:
           exec:
             command:
@@ -296,8 +290,6 @@ spec:
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
-        - name: ca
-          mountPath: "/etc/grid-security/certificates"
         livenessProbe:
           exec:
             command:
