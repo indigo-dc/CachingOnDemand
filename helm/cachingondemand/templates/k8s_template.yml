@@ -110,6 +110,17 @@ spec:
       labels:
         app: proxy
     spec:
+      volumes:
+      - name: xcache-creds
+        hostPath:
+          path: /tmp
+      - name: vomses
+        configMap:
+          name: vomses-config
+      - name: certs
+        secret:
+          secretName: certs
+          defaultMode: 256
       containers:
       - name: proxy
         imagePullPolicy: Always
@@ -176,7 +187,7 @@ spec:
       volumes:
       - name: xcache-data
         hostPath:
-          path: /root
+          path: {{ .Values.cache.cache_host_path }}
       - name: xcache-creds
         hostPath:
           path: /tmp
@@ -244,21 +255,21 @@ spec:
         - containerPort: 8080
 
       # ## WAITING FOR VOMS TTS solution
-      # - name: renew
-      #   args:
-      #     - --renew
-      #     - --vo 
-      #     - "{{ .Values.cache.vo }}"
-      #   imagePullPolicy: Always
-      #   image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
-      #   volumeMounts:
-      #   - name: xcache-creds
-      #     mountPath: /tmp/
-      #   - name: vomses
-      #     mountPath: /etc/vomses
-      #   - name: certs
-      #     mountPath: "/etc/grid-security/xrd/cert"
-      #     readOnly: true
+      - name: renew
+        args:
+          - --renew
+          - --vo 
+          - "{{ .Values.cache.vo }}"
+        imagePullPolicy: Always
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        volumeMounts:
+        - name: xcache-creds
+          mountPath: /tmp/
+        - name: vomses
+          mountPath: /etc/vomses
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
 
       # - name: client
       #   imagePullPolicy: Always
