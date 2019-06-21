@@ -134,6 +134,8 @@ spec:
             - curl
             - -f
             - http://localhost:8080/check_health
+          initialDelaySeconds: 300
+          periodSeconds: 60
         env:
         - name: REDIR_HOST
           value: "{{ .Values.cache.redir_host }}"
