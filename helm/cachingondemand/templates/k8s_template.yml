@@ -120,7 +120,7 @@ spec:
         secret:
           secretName: certs
           defaultMode: 256
-      - name: CAs
+      - name: ca
         emptyDir: {}
       containers:
       - name: proxy
@@ -137,7 +137,7 @@ spec:
           value: "{{ .Values.redirector.xrdport }}"
         image: "{{ .Values.proxy.repository }}:{{ .Values.proxy.tag }}" 
         volumeMounts:
-        - name: CAs
+        - name: ca
           mountPath: "/etc/grid-security/certificates"
           readOnly: true
         - name: certs
@@ -164,7 +164,7 @@ spec:
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
-        - name: CAs
+        - name: ca
           mountPath: "/etc/grid-security/certificates"
           
   selector:
@@ -209,7 +209,7 @@ spec:
         secret:
           secretName: certs
           defaultMode: 256
-      - name: CAs
+      - name: ca
         emptyDir: {}
       containers:
       - name: cache
@@ -252,7 +252,7 @@ spec:
         ## WAITING FOR CMS VOMS TTS solution
         - mountPath: /tmp/
           name: xcache-creds
-        - name: CAs
+        - name: ca
           mountPath: "/etc/grid-security/certificates"
           readOnly: true
         livenessProbe:
@@ -284,7 +284,7 @@ spec:
         - name: certs
           mountPath: "/etc/grid-security/xrd/cert"
           readOnly: true
-        - name: CAs
+        - name: ca
           mountPath: "/etc/grid-security/certificates"
 
       # - name: client
