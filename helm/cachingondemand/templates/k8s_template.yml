@@ -11,20 +11,10 @@ spec:
     name: xrootd
     port: {{ .Values.cache.xrdport }}
     targetPort: 32294
-    #nodePort: {{ .Values.cache.xrdport }}
   - protocol: TCP
     name: cmsd
     port: {{ .Values.cache.cmsport }}
     targetPort: 31113
-    #nodePort: {{ .Values.cache.cmsport }}
-  # TODO: integrate auth
-  #- protocol: TCP
-  #  name: http
-  #  port: 8800
-  #  targetPort: 8080
-  #  nodePort: {{ .Values.cache.http_port }}
-  externalIPs:
-  - "{{ .Values.cache.external_ip }}"
 
 ---
 kind: Service
@@ -32,22 +22,18 @@ apiVersion: v1
 metadata:
   name: xcache-redir-service
 spec:
-  type: NodePort
+  type: ClusterIP 
   selector:
     app: xredir
   ports:
   - protocol: TCP
     name: xrootd
     port: {{ .Values.redirector.xrdport }}
-    targetPort: 1094
-    nodePort: {{ .Values.redirector.xrdport }}
+    targetPort: {{ .Values.redirector.xrdport }}
   - protocol: TCP
     name: cmsd
     port: {{ .Values.redirector.cmsport }}
-    targetPort: 31213
-    nodePort: {{ .Values.redirector.cmsport }}
-  externalIPs:
-  - "{{ .Values.cache.external_ip }}"
+    targetPort: {{ .Values.redirector.cmsport }}
 ---
 kind: Service
 apiVersion: v1
@@ -128,7 +114,7 @@ spec:
       - name: proxy
         imagePullPolicy: Always
         args:
-        - --nogrid
+        #- --nogrid
         - --expose
         - --health_port
         - "8080"
@@ -136,10 +122,27 @@ spec:
         - name: REDIR_HOST
           value: "{{ .Values.cache.redir_host }}"
         - name: REDIR_XRD_PORT
-          value: "1094"
+          value: "{{ .Values.redirector.xrdport }}"
         image: "{{ .Values.proxy.repository }}:{{ .Values.proxy.tag }}" 
         ports:
         - containerPort: 1194
+
+      ## WAITING FOR VOMS TTS solution
+      - name: renew
+        args:
+          - --renew
+          - --vo 
+          - "{{ .Values.cache.vo }}"
+        imagePullPolicy: Always
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        volumeMounts:
+        - name: xcache-creds
+          mountPath: /tmp/
+        - name: vomses
+          mountPath: /etc/vomses
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
 
   selector:
     matchLabels:
@@ -188,6 +191,7 @@ spec:
       - name: cache
         imagePullPolicy: Always
         args:
+        - --nogsi
         - --proxy
         - --health_port
         - "8088"
@@ -239,32 +243,32 @@ spec:
         - containerPort: 31113
         - containerPort: 8080
 
-      ## WAITING FOR VOMS TTS solution
-      - name: renew
-        args:
-          - --renew
-          - --vo 
-          - "{{ .Values.cache.vo }}"
-        imagePullPolicy: Always
-        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
-        volumeMounts:
-        - name: xcache-creds
-          mountPath: /tmp/
-        - name: vomses
-          mountPath: /etc/vomses
-        - name: certs
-          mountPath: "/etc/grid-security/xrd/cert"
-          readOnly: true
+      # ## WAITING FOR VOMS TTS solution
+      # - name: renew
+      #   args:
+      #     - --renew
+      #     - --vo 
+      #     - "{{ .Values.cache.vo }}"
+      #   imagePullPolicy: Always
+      #   image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+      #   volumeMounts:
+      #   - name: xcache-creds
+      #     mountPath: /tmp/
+      #   - name: vomses
+      #     mountPath: /etc/vomses
+      #   - name: certs
+      #     mountPath: "/etc/grid-security/xrd/cert"
+      #     readOnly: true
 
-      - name: client
-        imagePullPolicy: Always
-        command: 
-        - /bin/bash
-        imagePullPolicy: Always
-        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
-        volumeMounts:
-        - name: xcache-creds
-          mountPath: /tmp/
+      # - name: client
+      #   imagePullPolicy: Always
+      #   command: 
+      #   - /bin/bash
+      #   imagePullPolicy: Always
+      #   image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+      #   volumeMounts:
+      #   - name: xcache-creds
+      #     mountPath: /tmp/
 
       #   livenessProbe:
       #     exec:
