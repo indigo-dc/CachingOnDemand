@@ -14,7 +14,7 @@ cache:
   mem_gb: 2
   high_wm: 0.95
   low_wm: 0.80
-  n_prefetch: 1
+  n_prefetch: 0
   origin_host: xrootd-cms.infn.it
   origin_xrd_port: 1094
   xrdport: 31494
