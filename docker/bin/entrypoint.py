@@ -24,6 +24,7 @@ group.add_argument('-P', '--proxy', help='XrootD proxy file cache mode', action=
 group.add_argument('-R', '--redirector', help='XrootD cache redirector mode', action="store_true")
 group.add_argument('-E', '--expose', help='cache expose mode', action="store_true")
 group.add_argument('--renew', help='proxy renew mode', action="store_true")
+group.add_argument('--CAs', help='update CAs', action="store_true")
 group.add_argument('--config', help='XrootD config file path')
 
 parser.add_argument('--vo', help='VO')
@@ -114,6 +115,9 @@ if __name__ == "__main__":
             logging.info("Command output: " + output)
         
         logging.info("Intalling CAs DONE")
+
+        if args.CAs:
+            sys.exit(0)
 
     check_env()
     if args.config:
