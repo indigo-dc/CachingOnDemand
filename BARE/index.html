@@ -1,0 +1,344 @@
+<!doctype html><html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="x-ua-compatible" content="ie=edge"><meta name="lang:clipboard.copy" content="Copy to clipboard"><meta name="lang:clipboard.copied" content="Copied to clipboard"><meta name="lang:search.language" content="en"><meta name="lang:search.pipeline.stopwords" content="True"><meta name="lang:search.pipeline.trimmer" content="True"><meta name="lang:search.result.none" content="No matching documents"><meta name="lang:search.result.one" content="1 matching document"><meta name="lang:search.result.other" content="# matching documents"><meta name="lang:search.tokenizer" content="[\s\-]+"><link rel="shortcut icon" href="../assets/images/favicon.png"><meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.3.0"><title>Quick Start with CMS XCache - Caching On Demand</title><link rel="stylesheet" href="../assets/stylesheets/application.4031d38b.css"><link rel="stylesheet" href="../assets/stylesheets/application-palette.224b79ff.css"><meta name="theme-color" content="#7e57c2"><script src="../assets/javascripts/modernizr.74668098.js"></script><link href="https://fonts.gstatic.com" rel="preconnect" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=swap"><style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style><link rel="stylesheet" href="../assets/fonts/material-icons.css"></head><body dir="ltr" data-md-color-primary="deep-purple" data-md-color-accent="green"><svg class="md-svg"><defs><svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg></defs></svg> <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off"> <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off"> <label class="md-overlay" data-md-component="overlay" for="__drawer"></label><a href="#step-by-step-deployment-on-bare-metal-cms-xcache" tabindex="1" class="md-skip">Skip to content </a><header class="md-header" data-md-component="header"><nav class="md-header-nav md-grid"><div class="md-flex"><div class="md-flex__cell md-flex__cell--shrink"><a href=".." title="Caching On Demand" class="md-header-nav__button md-logo"><i class="md-icon">cloud_circle</i></a></div><div class="md-flex__cell md-flex__cell--shrink"><label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label></div><div class="md-flex__cell md-flex__cell--stretch"><div class="md-flex__ellipsis md-header-nav__title" data-md-component="title"><span class="md-header-nav__topic">Caching On Demand</span><span class="md-header-nav__topic">Quick Start with CMS XCache</span></div></div><div class="md-flex__cell md-flex__cell--shrink"><label class="md-icon md-icon--search md-header-nav__button" for="__search"></label><div class="md-search" data-md-component="search" role="dialog"><label class="md-search__overlay" for="__search"></label><div class="md-search__inner" role="search"><form class="md-search__form" name="search"><input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active"> <label class="md-icon md-search__icon" for="__search"></label> <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">&#xE5CD;</button></form><div class="md-search__output"><div class="md-search__scrollwrap" data-md-scrollfix><div class="md-search-result" data-md-component="result"><div class="md-search-result__meta">Type to start searching</div><ol class="md-search-result__list"></ol></div></div></div></div></div></div><div class="md-flex__cell md-flex__cell--shrink"><div class="md-header-nav__source"><a href="https://github.com/Cloud-PG/CachingOnDemand/" title="Go to repository" class="md-source" data-md-source="github"><div class="md-source__icon"><svg viewBox="0 0 24 24" width="24" height="24"><use xlink:href="#__github" width="24" height="24"></use></svg></div><div class="md-source__repository">indigo-dc/CachingOnDemand</div></a></div></div></div></nav></header><div class="md-container"><main class="md-main"><div class="md-main__inner md-grid" data-md-component="container"><div class="md-sidebar md-sidebar--primary" data-md-component="navigation"><div class="md-sidebar__scrollwrap"><div class="md-sidebar__inner"><nav class="md-nav md-nav--primary" data-md-level="0"><label class="md-nav__title md-nav__title--site" for="__drawer"><a href=".." title="Caching On Demand" class="md-nav__button md-logo"><i class="md-icon">cloud_circle</i></a>Caching On Demand</label><div class="md-nav__source"><a href="https://github.com/Cloud-PG/CachingOnDemand/" title="Go to repository" class="md-source" data-md-source="github"><div class="md-source__icon"><svg viewBox="0 0 24 24" width="24" height="24"><use xlink:href="#__github" width="24" height="24"></use></svg></div><div class="md-source__repository">indigo-dc/CachingOnDemand</div></a></div><ul class="md-nav__list" data-md-scrollfix><li class="md-nav__item"><a href=".." title="Home" class="md-nav__link">Home</a></li><li class="md-nav__item md-nav__item--active"><input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc"><label class="md-nav__link md-nav__link--active" for="__toc">Quick Start with CMS XCache</label><a href="./" title="Quick Start with CMS XCache" class="md-nav__link md-nav__link--active">Quick Start with CMS XCache</a><nav class="md-nav md-nav--secondary"><label class="md-nav__title" for="__toc">Table of contents</label><ul class="md-nav__list" data-md-scrollfix><li class="md-nav__item"><a href="#cache-server-standalone-installation" title="Cache server standalone installation" class="md-nav__link">Cache server standalone installation</a><nav class="md-nav"><ul class="md-nav__list"><li class="md-nav__item"><a href="#requirements" title="Requirements" class="md-nav__link">Requirements</a></li><li class="md-nav__item"><a href="#packages-and-cas-installation" title="Packages and CAs installation" class="md-nav__link">Packages and CAs installation</a></li><li class="md-nav__item"><a href="#proxy-renewal-service" title="Proxy Renewal service" class="md-nav__link">Proxy Renewal service</a></li><li class="md-nav__item"><a href="#xrootd-server-configuration" title="XRootD server configuration" class="md-nav__link">XRootD server configuration</a></li><li class="md-nav__item"><a href="#start-xcache-deamons" title="Start XCache deamons" class="md-nav__link">Start XCache deamons</a></li><li class="md-nav__item"><a href="#test-the-deployment" title="Test the deployment" class="md-nav__link">Test the deployment</a></li></ul></nav></li><li class="md-nav__item"><a href="#redirector-installation" title="Redirector installation" class="md-nav__link">Redirector installation</a></li><li class="md-nav__item"><a href="#metricbeat-installation" title="Metricbeat installation" class="md-nav__link">Metricbeat installation</a></li></ul></nav></li><li class="md-nav__item"><a href="../DOCKER/" title="Quick Start (Docker)" class="md-nav__link">Quick Start (Docker)</a></li><li class="md-nav__item"><a href="../demo/DEMO/" title="Demo on K8s with Helm" class="md-nav__link">Demo on K8s with Helm</a></li><li class="md-nav__item"><a href="../demo/DODAS/" title="Demo deployment with DODAS" class="md-nav__link">Demo deployment with DODAS</a></li></ul></nav></div></div></div><div class="md-sidebar md-sidebar--secondary" data-md-component="toc"><div class="md-sidebar__scrollwrap"><div class="md-sidebar__inner"><nav class="md-nav md-nav--secondary"><label class="md-nav__title" for="__toc">Table of contents</label><ul class="md-nav__list" data-md-scrollfix><li class="md-nav__item"><a href="#cache-server-standalone-installation" title="Cache server standalone installation" class="md-nav__link">Cache server standalone installation</a><nav class="md-nav"><ul class="md-nav__list"><li class="md-nav__item"><a href="#requirements" title="Requirements" class="md-nav__link">Requirements</a></li><li class="md-nav__item"><a href="#packages-and-cas-installation" title="Packages and CAs installation" class="md-nav__link">Packages and CAs installation</a></li><li class="md-nav__item"><a href="#proxy-renewal-service" title="Proxy Renewal service" class="md-nav__link">Proxy Renewal service</a></li><li class="md-nav__item"><a href="#xrootd-server-configuration" title="XRootD server configuration" class="md-nav__link">XRootD server configuration</a></li><li class="md-nav__item"><a href="#start-xcache-deamons" title="Start XCache deamons" class="md-nav__link">Start XCache deamons</a></li><li class="md-nav__item"><a href="#test-the-deployment" title="Test the deployment" class="md-nav__link">Test the deployment</a></li></ul></nav></li><li class="md-nav__item"><a href="#redirector-installation" title="Redirector installation" class="md-nav__link">Redirector installation</a></li><li class="md-nav__item"><a href="#metricbeat-installation" title="Metricbeat installation" class="md-nav__link">Metricbeat installation</a></li></ul></nav></div></div></div><div class="md-content"><article class="md-content__inner md-typeset"><a href="https://github.com/Cloud-PG/CachingOnDemand/edit/master/docs/BARE.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a><h1 id="step-by-step-deployment-on-bare-metal-cms-xcache">Step by step deployment on bare metal: CMS XCache</h1>
+<h2 id="cache-server-standalone-installation">Cache server standalone installation</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>OS: Centos7</li>
+<li>Port: one open service port</li>
+<li>Valid CMS /etc/vomses files</li>
+<li>Valid grid host certifate</li>
+<li>Valid service certificate that is able to read from AAA (/etc/grid-security/xrd/xrdcert.pem, /etc/grid-security/xrd/xrdkey.pem)</li>
+</ul>
+<h3 id="packages-and-cas-installation">Packages and CAs installation</h3>
+<p>Create and execute the following script (we are going to install the 4.8.3 version for testing purpose, but consider also the 4.9 and 4.10 as they include new feature and fix):</p>
+<pre><code class="bash">#!/bin/bash
+XRD_VERSION=4.8.3-1.el7
+
+echo &quot;LC_ALL=C&quot; &gt;&gt; /etc/environment \
+    &amp;&amp; echo &quot;LANGUAGE=C&quot; &gt;&gt; /etc/environment \
+    &amp;&amp; yum --setopt=tsflags=nodocs -y update \
+    &amp;&amp; yum --setopt=tsflags=nodocs -y install wget \
+    &amp;&amp; yum clean all
+
+cd /etc/yum.repos.d
+wget http://repository.egi.eu/community/software/preview.repository/2.0/releases/repofiles/centos-7-x86_64.repo \
+    &amp;&amp; wget http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo
+yum --setopt=tsflags=nodocs -y install epel-release yum-plugin-ovl \
+    &amp;&amp; yum --setopt=tsflags=nodocs -y install fetch-crl wn sysstat \
+    &amp;&amp; yum clean all
+
+yum install -y ca-policy-egi-core ca-policy-lcg
+/usr/sbin/fetch-crl -q
+
+yum install xrootd-server-$VERSION
+
+mkdir -p /etc/grid-security/xrd/
+
+chown -R xrootd:xrootd /etc/grid-security/xrd/
+
+systemctl enable fetch-crl-cron
+systemctl start fetch-crl-cron
+
+curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.2.4-x86_64.rpm
+sudo rpm -vi metricbeat-6.2.4-x86_64.rpm
+</code></pre>
+
+<h3 id="proxy-renewal-service">Proxy Renewal service</h3>
+<p>In order to keep the service proxy valid a simple service che be created on the machine.
+First create a service file (e.g. <code>/usr/lib/systemd/system/xrootd-renew-proxy.service</code>):</p>
+<pre><code class="bash">[Unit]
+Description=Renew xrootd proxy
+
+[Service]
+User=xrootd
+Group=xrootd
+Type = oneshot
+ExecStart = /bin/voms-proxy-init --cert /etc/grid-security/xrd/cert/cert.pem --key /etc/grid-security/xrd/cert/key.pem -voms cms -valid 48:00
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>Then a timer service is required to manage the frequency of the proxy renewal (<code>/usr/lib/systemd/system/xrootd-renew-proxy.timer</code>):</p>
+<pre><code class="bash">[Unit]
+Description=Renew proxy every day at midnight
+
+[Timer]
+OnCalendar=*-*-* 00:00:00
+Unit=xrootd-renew-proxy.service
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+
+<p>At this point you can start and reload the services with:</p>
+<pre><code class="bash">systemctl start xrootd-renew-proxy.timer
+systemctl daemon-reload
+</code></pre>
+
+<h3 id="xrootd-server-configuration">XRootD server configuration</h3>
+<p>The reference guide for the configuration is the official one <a href="http://xrootd.org/doc/dev47/pss_config.htm">here</a>. For the version 4.9 or newer please refer to the recomended ones <a href="http://xrootd.org/docs.html">here</a></p>
+<p>What follows is a working point used and tested at different sites, its purpose is to show the main knobs available and how to threat them.
+Create a configuration file (e.g. <code>/etc/xrootd/xrootd-xcache.cfg</code>)</p>
+<pre><code class="bash"># xrd and cmsd process ports
+set xrdport=1094
+set cmsdport=1213
+
+# cache redirector address
+set rdtrCache=0.0.0.0
+set rdtrPortCmsd=cmsdport
+
+# address and port of the origin servers
+set rdtrGlobal=xrootd-cms.infn.it
+set rdtrGlobalPort=1094
+
+# disk occupation water marks
+set cacheLowWm=0.80
+set cacheHiWm=0.90
+
+# log level for cache processes
+set cacheLogLevel=info
+
+# path to folder for storing data, NB it has to be owned by xrootd user
+set cachePath=/data/xrd
+
+# ram dedicated to cache (in GB), &lt;=50% of the total is suggested
+set cacheRam=16
+
+
+all.manager $rdtrCache:$rdtrPortCmsd
+
+# logging level for all the different activities
+xrootd.trace info
+ofs.trace info
+xrd.trace info
+cms.trace info
+sec.trace info
+pfc.trace $cacheLogLevel
+
+if exec cmsd
+
+# if the process is the cluster manager, just run in on the chosen port
+
+all.role server
+xrd.port $cmsdport
+
+all.export / stage
+oss.localroot $cachePath
+
+else
+
+# if the process is the xrd one, configure and start the cache service at the specified port
+
+xrd.port $xrdport
+
+##### GENERAL CONFIGURATION ######
+
+# manage the work directory
+all.export /
+all.role  server
+oss.localroot $cachePath
+
+oss.space meta $cachePath/
+oss.space data $cachePath/
+pfc.spaces data meta
+
+# in the system is overloaded fallback to remote read
+xrootd.fsoverload redirect xrootd-cms.infn.it:1094
+
+# For xrootd, load the proxy plugin and the disk caching plugin.
+ofs.osslib   libXrdPss.so
+pss.cachelib libXrdFileCache.so
+
+# indicate the origin
+pss.origin $rdtrGlobal:$rdtrGlobalPort
+
+##### SECURITY CONFIGURATION ######
+xrootd.seclib /usr/lib64/libXrdSec.so
+
+# use gsi as client-cache authN method
+sec.protocol /usr/lib64 gsi \
+  -certdir:/etc/grid-security/certificates \
+  -cert:/etc/grid-security/xrd/xrdcert.pem \
+  -key:/etc/grid-security/xrd/xrdkey.pem \
+  -d:3 \
+  -crl:1
+
+ofs.authorize 1
+acc.audit deny grant
+
+# use gsi user&lt;--&gt;namespace mapping file as client-cache authZ method
+acc.authdb /etc/xrootd/Authfile-auth
+sec.protbind * gsi
+
+
+##### CACHE CONFIGURATION ######
+
+pfc.diskusage $cacheLowWm $cacheHiWm
+pfc.ram       ${cacheRam}g
+
+# Tune the client timeouts to more aggressively timeout.
+pss.setopt ParallelEvtLoop 10
+pss.setopt RequestTimeout 25
+pss.setopt ConnectTimeout 25
+pss.setopt ConnectionRetry 2
+
+# Standard values for streaming mode jobs
+set cacheStreams=256
+set prefetch=0
+set blkSize=512k
+
+pss.config streams $cacheStreams
+pfc.blocksize   $blkSize
+pfc.prefetch    $prefetch
+
+fi
+</code></pre>
+
+<p>In addition for the authZ part, a file has to be created with the desired permission per user (e.g. <code>/etc/xrootd/Authfile-auth</code>):</p>
+<pre><code class="bash"># full permissions to all users for both /store/* paths and /*
+u * /store/ a / a
+</code></pre>
+
+<h3 id="start-xcache-deamons">Start XCache deamons</h3>
+<p>The only thing left now is to start the respective deamons with:</p>
+<pre><code class="bash"># enable and start xrootd server deamons
+systemctl enable xrootd@xcache.service
+systemctl enable cmsd@xcache.service
+
+systemctl start xrootd@xcache.service
+systemctl start cmsd@xcache.service
+</code></pre>
+
+<h3 id="test-the-deployment">Test the deployment</h3>
+<ul>
+<li>to check if the daemons started correctly just use systemctl as below:</li>
+</ul>
+<pre><code class="bash">systemctl status xrootd@xcache.service
+systemctl status cmsd@xcache.service
+</code></pre>
+
+<p>in case of problems logs can be found in <code>/var/log/xrootd/xcache</code></p>
+<ul>
+<li>then you can try to copy a file from the origin:  </li>
+</ul>
+<pre><code class="text">xrdcp -f -v xroot://localhost:&lt;xrdport defined in the configuration above&gt;/&lt;path to your file in origin&gt;
+</code></pre>
+
+<ul>
+<li>the expected outcome is something like:</li>
+</ul>
+<pre><code class="text">[root@xrootdcentostest centos]# xrdcp -f -v xroot://localhost:32294//store/mc/RunIISummer17DRPremix/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/AODSIM/92X_upgrade2017_realistic_v10-v2/90000/C85940F6-9596-E711-8FD6-D8D385FF1940.root /dev/null
+[544MB/3.108GB][ 17%][========&gt;                                         ][19.43MB/s]
+</code></pre>
+
+<ul>
+<li>Finally you should be able to see your file on the cache disk on the path you indicated in the configuration.</li>
+</ul>
+<h2 id="redirector-installation">Redirector installation</h2>
+<p>The configuration for a cache redirector is really simple (e.g. <code>/etc/xrootd/xrootd-cacheredir.cfg</code>)</p>
+<pre><code class="bash">set rdtrcache=&lt;redirector host&gt;
+set rdtrportcmsd=&lt;redirector cluster manager port&gt;
+set rdtrportxrd=&lt;redirector xrd port&gt;
+
+all.manager $rdtrcache:$rdtrportcmsd
+
+# temporary fix for CMS multisource jobs - fixed probably by version 5
+cms.sched  maxretries 0 nomultisrc
+
+xrd.allow host *
+xrd.port $rdtrportxrd
+xrd.port $rdtrportcmsd if exec cmsd
+all.export /store stage r/o
+all.role manager
+</code></pre>
+
+<p>and then just start the daemons:</p>
+<pre><code class="bash"># enable and start xrootd redirector daemons
+systemctl enable xrootd@cacheredir.service
+systemctl enable cmsd@cacheredir.service
+
+systemctl start xrootd@cacheredir.service
+systemctl start cmsd@cacheredir.service
+</code></pre>
+
+<h2 id="metricbeat-installation">Metricbeat installation</h2>
+<p>Create a metricbeat configuration file (e.g. <code>/etc/metricbeat/metricbeat.yml</code>):</p>
+<pre><code class="yaml"># You can find the full configuration reference here:
+# https://www.elastic.co/guide/en/beats/metricbeat/index.html
+
+#==========================  Modules configuration ============================
+metricbeat.modules:
+
+#------------------------------- System Module -------------------------------
+- module: system
+  metricsets:
+    # CPU stats
+    - cpu
+
+    # System Load stats
+    - load
+
+    # Per CPU core stats
+    - core
+
+    # IO stats
+    - diskio
+
+    # Per filesystem stats
+    - filesystem
+
+    # File system summary stats
+    - fsstat
+
+    # Memory stats
+    - memory
+
+    # Network stats
+    - network
+
+    # Per process stats
+    - process
+
+    # Sockets (linux only)
+    #- socket
+  enabled: true
+  period: 60s
+  processes: ['.*']
+
+
+#================================ General =====================================
+
+# The name of the shipper that publishes the network data. It can be used to group
+# all the transactions sent by a single shipper in the web interface.
+name: 'DUMMY: cache sitename'
+
+#================================ Outputs =====================================
+
+# Configure what outputs to use when sending the data collected by the beat.
+# Multiple outputs may be used.
+
+#-------------------------- Elasticsearch output ------------------------------
+output.elasticsearch:
+  # Array of hosts to connect to.
+  hosts: [&quot;DUMMY_esHost.com&quot;]
+  template.name: &quot;metricbeat_slave&quot;
+  template.path: &quot;metricbeat.template.json&quot;
+  template.overwrite: false
+
+  # Optional protocol and basic auth credentials.
+  protocol: &quot;http&quot;
+  username: &quot;dodas&quot;
+  password: &quot;DUMMY&quot;
+
+#================================ Logging =====================================
+
+# Sets log level. The default log level is info.
+# Available log levels are: critical, error, warning, info, debug
+#logging.level: debug
+</code></pre>
+
+<p>and then just start the daemon:</p>
+<pre><code class="bash"># enable and start metricbeat service
+systemctl enable metricbeat.service
+systemctl start metricbeat.service
+</code></pre></article></div></div></main><footer class="md-footer"><div class="md-footer-nav"><nav class="md-footer-nav__inner md-grid"><a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev"><div class="md-flex__cell md-flex__cell--shrink"><i class="md-icon md-icon--arrow-back md-footer-nav__button"></i></div><div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span class="md-flex__ellipsis"><span class="md-footer-nav__direction">Previous</span>Home</span></div></a><a href="../DOCKER/" title="Quick Start (Docker)" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next"><div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span class="md-flex__ellipsis"><span class="md-footer-nav__direction">Next</span>Quick Start (Docker)</span></div><div class="md-flex__cell md-flex__cell--shrink"><i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i></div></a></nav></div><div class="md-footer-meta md-typeset"><div class="md-footer-meta__inner md-grid"><div class="md-footer-copyright">powered by <a href="https://www.mkdocs.org">MkDocs</a> and <a href="https://squidfunk.github.io/mkdocs-material/">Material for MkDocs</a></div></div></div></footer></div><script src="../assets/javascripts/application.b260a35d.js"></script><script>app.initialize({version:"1.0.4",url:{base:".."}})</script></body></html>
