@@ -8,6 +8,7 @@ theme:
     accent: 'Green'
 nav:
 - Home: 'README.md'
+- Quick Start with CMS XCache: 'BARE.md' 
 - Quick Start (Docker): 'DOCKER.md'
 - Demo on K8s with Helm: 'demo/DEMO.md'
 - Demo deployment with DODAS: 'demo/DODAS.md'

@@ -99,6 +99,6 @@ elastic_password: testpass # elasticsearch password
     - role: cloudpg.cachingondemand
 ```
 
-### Deployment example: CMS XCache
+### Step by step deployment on bare metal: CMS XCache
 
-[https://xcache.readthedocs.io/en/latest/automated-grid.html](https://xcache.readthedocs.io/en/latest/automated-grid.html)
+[here](BARE.md)

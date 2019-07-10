@@ -2,9 +2,13 @@ FROM cloudpg/centos-7-grid as base
 LABEL maintainer="diego.ciangottini@pg.infn.it"
 LABEL Version=1.0
 
-RUN yum install -y xrootd-server sudo \
+#RUN yum --showduplicates list xrootd-server
+
+RUN yum remove -y xrootd-client
+
+RUN yum install -y xrootd-server-4.8.3-1.el7 sudo \
     && yum --setopt=tsflags=nodocs -y install python python-pip \
-        xrootd-devel.x86_64 xrootd-server-devel.x86_64 \
+        xrootd-devel-4.8.3-1.el7 xrootd-server-devel-4.8.3-1.el7 \
         gcc gcc-c++ cmake git \
         libcurl libcurl-devel jsoncpp-devel\
     && pip install flask 

@@ -13,7 +13,6 @@ all: help
 help:
 	@echo "Available commands:\n"
 	@echo "- build			: "
-	@echo "- build-doc		:"
 	@echo "- compile-plugins	: "
 	@echo "- build-no-plugin	: "
 	@echo "- push			: "
