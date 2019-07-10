@@ -41,8 +41,8 @@ helm-build:
 	git checkout ${CURRENT_BRANCH}
 
 ansible-build:
-    mkdir -p /tmp/ansible
-    cp -r roles/cachingondemand/* /tmp/ansible/
+	mkdir -p /tmp/ansible
+	cp -r roles/cachingondemand/* /tmp/ansible/
 	git checkout ansible
 	cp -r /tmp/ansible/* ./
 	git add -A
