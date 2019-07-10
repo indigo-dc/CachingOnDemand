@@ -1,7 +1,7 @@
 ---
 # defaults file for dciangot.xcache
 - include: centos7.yml
-  when: ansible_distribution == "CentOS" and ansible_distribution_major_version > '6' and orchestrator == "metal"
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version > '6' and (orchestrator == "metal" or orchestrator is undefined)
 
 - include: marathon.yml
   when: orchestrator == "marathon"

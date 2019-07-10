@@ -5,7 +5,7 @@ Description=Renew xrootd proxy
 User=xrootd
 Group=xrootd
 Type = oneshot
-ExecStart = voms-proxy-init -voms cms --valid 192:00 --out /tmp/x509up_u`id -u xrootd` -cert {{ path_to_certs }}/xrdcert.pem -key {{ path_to_certs }}/xrdkey.pem
+ExecStart = /bin/voms-proxy-init -voms cms --valid 192:00 -cert {{ path_to_certs }}/xrdcert.pem -key {{ path_to_certs }}/xrdkey.pem
 
 [Install]
 WantedBy=multi-user.target
