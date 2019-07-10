@@ -1,7 +1,7 @@
 RELEASE = helm
 CHART_NAME = cachingondemand
 GH_PAGES = https://cloud-pg.github.io/CachingOnDemand/
-COMMIT_MSG = "update helm"
+COMMIT_MSG = "update deployment"
 CURRENT_BRANCH = "report_portainer"
 
 .PHONY: help \
@@ -38,6 +38,16 @@ helm-build:
 	git add index.yaml *.tgz
 	git commit -m ${COMMIT_MSG}
 	git push origin gh-pages
+	git checkout ${CURRENT_BRANCH}
+
+ansible-build:
+    mkdir -p /tmp/ansible
+    cp -r roles/cachingondemand/* /tmp/ansible/
+	git checkout ansible
+	cp -r /tmp/ansible/* ./
+	git add -A
+	git commit -m ${COMMIT_MSG}
+	git push origin ansible
 	git checkout ${CURRENT_BRANCH}
 
 install-mkdocs:
