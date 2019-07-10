@@ -6,6 +6,5 @@
 - include: marathon.yml
   when: orchestrator == "marathon"
 
-- include: k8s.yml
-  when: orchestrator == "k8s"
-
+- include: docker.yml
+  when: orchestrator == "docker"

@@ -24,18 +24,20 @@
       - sysstat
       - ca-policy-egi-core 
       - ca-policy-lcg
-      - xrootd-server
-    state: latest
+      - xrootd-server-{{ xrootd_version }}
+    state: installed
 
-#- name: get metricbeat rpm
-#  get_url:
-#    url: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-6.2.4-x86_64.rpm
-#    dest: /tmp/metricbeat-6.2.4-x86_64.rpm
+- name: get metricbeat rpm
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-{{ metricbeat_version }}.rpm
+    dest: /tmp/metricbeat-{{ metricbeat_version }}.rpm
+  when: monitoring == "metricbeat"
 
-#- name: install metricbeat
-#  yum:
-#    name: /tmp/metricbeat-6.2.4-x86_64.rpm
-#    state: latest
+- name: install metricbeat
+  yum:
+    name: /tmp/metricbeat-{{ metricbeat_version }}.rpm
+    state: installed
+  when: monitoring == "metricbeat"
 
 - name: create xcache server configuration
   template: 
@@ -49,43 +51,47 @@
     src: templates/metal/Authfile-noauth.j2
     dest: /etc/xrootd/Authfile-noauth
 
-#- name: set xrootd owner for /etc/grid-security/xrd
-#  file: 
-#    dest: /etc/grid-security/xrd
-#    owner: xrootd
-#    group: xrootd
-#    recurse: yes
+- name: set xrootd owner for "{{ path_to_certs }}"
+  file: 
+    dest: "{{ path_to_certs }}"
+    owner: xrootd
+    group: xrootd
+    recurse: yes
+  when: grid
 
-- name: set xrootd owner for cache directory
+- name: set xrootd owner for cache directory "{{ CACHE_PATH }}"
   file: 
     dest: "{{ CACHE_PATH }}"
     owner: xrootd
     group: xrootd
     recurse: yes
 
-#- name: create metricbeat configuration 
-#  template:
-#    src: templates/metricbeat-conf.j2
-#    dest: /etc/metricbeat/metricbeat.yml
+- name: create metricbeat configuration 
+  template:
+    src: templates/metricbeat-conf.j2
+    dest: /etc/metricbeat/metricbeat.yml
+  when: monitoring == "metricbeat"
 
-#- name: create renew proxy service configuration
-#  template:
-#    src: templates/xrootd-renew-proxy-conf.j2
-#    dest: /usr/lib/systemd/system/xrootd-renew-proxy.service
+- name: create renew proxy service configuration
+  template:
+    src: templates/metal/xrootd-renew-proxy-conf.j2
+    dest: /usr/lib/systemd/system/xrootd-renew-proxy.service
 
-#- name: create renew proxy timer configuration
-#  template: 
-#    src: templates/xrootd-renew-proxy-timer-conf.j2
-#    dest: /usr/lib/systemd/system/xrootd-renew-proxy.timer
+- name: create renew proxy timer configuration
+  template: 
+    src: templates/metal/xrootd-renew-proxy-timer-conf.j2
+    dest: /usr/lib/systemd/system/xrootd-renew-proxy.timer
 
-#- name: enable service xrootd-renew-proxy
-#  systemd:
-#    name: xrootd-renew-proxy.timer
-#    enabled: yes
-#    masked: no
+- name: enable service xrootd-renew-proxy
+  systemd:
+    name: xrootd-renew-proxy.timer
+    enabled: yes
+    masked: no
 
-#- name: Make sure xrootd-renew-proxy is running
-#  systemd: state=restarted name=xrootd-renew-proxy.timer
+- name: Make sure xrootd-renew-proxy is running
+  systemd: 
+    state: restarted
+    name: xrootd-renew-proxy.timer
 
 - name: fetch-crl -q
   command: /usr/sbin/fetch-crl -q
@@ -97,7 +103,9 @@
     masked: no
 
 - name: Make sure fetch-crl-cron is running
-  systemd: state=restarted name=fetch-crl-cron 
+  systemd: 
+    state: restarted
+    name: fetch-crl-cron 
 
 - name: enable service xrootd@xcache and ensure it is not masked
   systemd:
@@ -106,7 +114,9 @@
     masked: no
 
 - name: Make sure xrootd@xcache is running
-  systemd: state=restarted name=xrootd@xcache
+  systemd: 
+    state: restarted
+    name: xrootd@xcache
 
 - name: enable service cmsd@xcache
   systemd:
@@ -115,13 +125,19 @@
     masked: no
 
 - name: Make sure cmsd@xcache is running
-  systemd: state=restarted name=cmsd@xcache
+  systemd: 
+    state: restarted
+    name: cmsd@xcache
 
-#- name: enable service metricbeat
-#  systemd:
-#    name: metricbeat
-#    enabled: yes
-#    masked: no
+- name: enable service metricbeat
+  systemd:
+    name: metricbeat
+    enabled: yes
+    masked: no
+  when: monitoring == "metricbeat"
 
-#- name: Make sure metricbeat is running
-#  systemd: state=restarted name=metricbeat
+- name: Make sure metricbeat is running
+  systemd: 
+    state: restarted
+    name: metricbeat
+  when: monitoring == "metricbeat"

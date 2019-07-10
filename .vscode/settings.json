@@ -1,0 +1,6 @@
+{
+    "docker-compose.files": [
+        "docker/docker-compose.yml"
+    ],
+    "ansible.credentialsConfigured": true
+}
