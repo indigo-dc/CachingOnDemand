@@ -70,7 +70,13 @@ A guided demo is available [here](demo/DODAS.md)
 
 ### Role Variables
 
+Create and customize your xcache ansible configuration (e.g. `xcache_config.yaml`)
+
 ``` yaml
+xrootd_version: 4.8.3-1.el7
+metricbeat_version: 6.2.4-x86_64
+monitoring: # enable metricbeat sensors by setting this to "metricbeat"
+path_to_certs: /etc/grid-security/xrd
 BLOCK_SIZE: 512k # size of the file block used by the cache
 CACHE_LOG_LEVEL: info # server log level
 CACHE_PATH: /data/xrd # folder for cached files
@@ -91,12 +97,26 @@ elastic_password: testpass # elasticsearch password
 
 ### Example Playbook
 
+First install the role:
+
+```bash
+ansible-galaxy install git+https://github.com/Cloud-PG/CachingOnDemand.git,ansible
+```
+
+Then create a basic ansible playbook (e.g. `xcache_playbook.yaml`)
+
 ```yaml
 ---
 - hosts: localhost
   remote_user: root
   roles:
-    - role: cloudpg.cachingondemand
+    - role: CachingOnDemand
+```
+
+Finally run the playbook installation:
+
+```bash
+ansible-playbook --extra-vars "@xcache_config.yaml" xcache_playbook.yaml
 ```
 
 ### Step by step deployment on bare metal: CMS XCache
