@@ -3,7 +3,6 @@
 xrootd_version: 4.8.3-1.el7
 metricbeat_version: 6.2.4-x86_64
 monitoring:
-grid: True
 path_to_certs: /etc/grid-security/xrd
 BLOCK_SIZE: 512k
 CACHE_LOG_LEVEL: info

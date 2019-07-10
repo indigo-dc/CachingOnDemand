@@ -57,7 +57,6 @@
     owner: xrootd
     group: xrootd
     recurse: yes
-  when: grid
 
 - name: set xrootd owner for cache directory "{{ CACHE_PATH }}"
   file: 
