@@ -101,7 +101,7 @@ set cmsdport=1213
 
 # cache redirector address
 set rdtrCache=0.0.0.0
-set rdtrPortCmsd=cmsdport
+set rdtrPortCmsd=1213
 
 # address and port of the origin servers
 set rdtrGlobal=xrootd-cms.infn.it
@@ -178,13 +178,13 @@ sec.protocol /usr/lib64 gsi \
   -key:/etc/grid-security/xrd/xrdkey.pem \
   -d:3 \
   -crl:1
+sec.protbind * gsi
 
 ofs.authorize 1
 acc.audit deny grant
 
 # use gsi user<-->namespace mapping file as client-cache authZ method
 acc.authdb /etc/xrootd/Authfile-auth
-sec.protbind * gsi
 
 
 ##### CACHE CONFIGURATION ######
