@@ -1,6 +1,5 @@
 ---
 # defaults file for dciangot.xcache
-orchestrator: metal
 xrootd_version: 4.8.3-1.el7
 metricbeat_version: 6.2.4-x86_64
 monitoring:

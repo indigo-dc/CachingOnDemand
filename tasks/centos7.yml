@@ -24,7 +24,6 @@
       - sysstat
       - ca-policy-egi-core 
       - ca-policy-lcg
-      - xrootd-client-{{ xrootd_version }}
       - xrootd-server-{{ xrootd_version }}
     state: installed
 
