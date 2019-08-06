@@ -1,0 +1,16 @@
+site_name: Caching On Demand
+theme:
+  name: material
+  logo:
+    icon: cloud_circle
+  palette:
+    primary: 'Deep Purple'
+    accent: 'Green'
+nav:
+- Home: 'README.md'
+- Quick Start with CMS XCache: 'BARE.md' 
+- Quick Start (Docker): 'DOCKER.md'
+- Demo on K8s with Helm: 'demo/DEMO.md'
+- Demo deployment with DODAS: 'demo/DODAS.md'
+repo_name: 'indigo-dc/CachingOnDemand'
+repo_url: 'https://github.com/Cloud-PG/CachingOnDemand'

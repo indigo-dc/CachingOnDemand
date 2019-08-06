@@ -1,14 +1,14 @@
-version: '3'
+version: '3.2'
 services:
   cache:
     deploy:
-      replicas: 2
-    image: "cloudpg/xrootd-proxy:xrd"
-    command: ["--nogrid", "--proxy", "--health_port", "8080"] 
+      replicas: 1 
+    image: "cloudpg/cachingondemand:compose"
+    command: ["--nogrid", "--config", "/etc/xrootd/xrd_test.conf" ,"--health_port", "8080"] 
     environment:
-      REDIR_HOST: 'redirector'
+      REDIR_HOST: 'cache_redirector'
       REDIR_CMSD_PORT: 1213
-      ORIGIN_HOST: 'origin'
+      ORIGIN_HOST: 'cache_origin'
       ORIGIN_XRD_PORT: 1194
       LOW_WM: 0.80
       HI_WM: 0.90
@@ -23,14 +23,14 @@ services:
     expose:
       - "32294"
       - "31113"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
+    #volumes:
+    #  - /home/dciangot/git/xrd-decision:/usr/local/xrd-decision
 
   redirector:
-    image: "cloudpg/xrootd-proxy:xrd"
-    command: ["--nogrid", "--redirector", "--health_port", "8080"] 
+    image: "cloudpg/cachingondemand:compose"
+    command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_redir.conf" ,"--health_port", "8080"] 
     environment:
-      REDIR_HOST: 'redirector'
+      REDIR_HOST: 'cache_redirector'
       REDIR_CMSD_PORT: 1213
       REDIR_XRD_PORT: 1094
     networks:
@@ -38,18 +38,41 @@ services:
     expose:
       - "1094"
       - "1213"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
 
   origin:
-    image: "cloudpg/xrootd-proxy:xrd"
+    image: "cloudpg/cachingondemand:compose"
     command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_origin.conf", "--health_port", "8080"]
     networks:
       - overlay
     expose:
       - "1194"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/check_health"]
+
+  client:
+    image: "cloudpg/cachingondemand:compose"
+    command: ["--nogrid", "--config", "/etc/xrootd/xrd_test_origin.conf", "--health_port", "8080"]
+    networks:
+      - overlay
+    expose:
+      - "1194"
+
+  #reporter:
+  #  image: "cloudpg/cachereport"
+  #  environment:
+  #    COLLECTOR_PORT: "1294"
+  #  networks:
+  #    - overlay
+  #  expose:
+  #    - "1294"
+
+  portainer:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    image: "portainer/portainer"
+    network_mode: "host"
+    ports:
+    - "9000:9000"
+    expose:
+      - "9000"
 
 networks:
   overlay:

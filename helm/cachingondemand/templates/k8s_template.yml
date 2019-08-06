@@ -1,0 +1,326 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcache-server-service
+spec:
+  type: ClusterIP
+  selector:
+    app: xcache
+  ports:
+  - protocol: TCP
+    name: xrootd
+    port: {{ .Values.cache.xrdport }}
+    targetPort: 32294
+  - protocol: TCP
+    name: cmsd
+    port: {{ .Values.cache.cmsport }}
+    targetPort: 31113
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcache-redir-service
+spec:
+  type: ClusterIP 
+  selector:
+    app: xredir
+  ports:
+  - protocol: TCP
+    name: xrootd
+    port: {{ .Values.redirector.xrdport }}
+    targetPort: {{ .Values.redirector.xrdport }}
+  - protocol: TCP
+    name: cmsd
+    port: {{ .Values.redirector.cmsport }}
+    targetPort: {{ .Values.redirector.cmsport }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: xcache-proxy
+spec:
+  type: NodePort
+  selector:
+    app: proxy
+  ports:
+  - protocol: TCP
+    name: xrootd
+    port: {{ .Values.proxy.xrdport }}
+    targetPort: 1194
+    nodePort: {{ .Values.proxy.xrdport }}
+  externalIPs:
+  - "{{ .Values.proxy.external_ip }}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xredir-pod
+  labels:
+    app: xredir
+spec:
+  template:
+    metadata:
+      labels:
+        app: xredir
+    spec:
+      containers:
+      - name: redirector
+        imagePullPolicy: Always
+        args:
+        - --nogrid
+        - --redirector
+        - --health_port
+        - "8080"
+        env:
+        - name: REDIR_CMSD_PORT
+          value: "{{ .Values.redirector.cmsport }}"
+        - name: REDIR_HOST
+          value: "{{ .Values.cache.redir_host }}" 
+        - name: REDIR_XRD_PORT
+          value: "{{ .Values.redirector.xrdport }}"
+        image: "{{ .Values.redirector.repository }}:{{ .Values.redirector.tag }}" 
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:8080/check_health
+        ports:
+        - containerPort: {{ .Values.redirector.xrdport }}
+        - containerPort: {{ .Values.redirector.cmsport }}
+
+  selector:
+    matchLabels:
+      app: xredir
+
+  replicas: {{ .Values.redirector.replicas }}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-pod
+  labels:
+    app: proxy
+spec:
+  template:
+    metadata:
+      labels:
+        app: proxy
+    spec:
+      volumes:
+      - name: xcache-creds
+        emptyDir: {}
+      - name: vomses
+        configMap:
+          name: vomses-config
+      - name: certs
+        secret:
+          secretName: certs
+          defaultMode: 256
+      containers:
+      - name: proxy
+        imagePullPolicy: Always
+        args:
+        #- --nogrid
+        - --expose
+        - --health_port
+        - "8080"
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:8080/check_health
+          initialDelaySeconds: 300
+          periodSeconds: 60
+        env:
+        - name: REDIR_HOST
+          value: "{{ .Values.cache.redir_host }}"
+        - name: REDIR_XRD_PORT
+          value: "{{ .Values.redirector.xrdport }}"
+        image: "{{ .Values.proxy.repository }}:{{ .Values.proxy.tag }}" 
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
+        - mountPath: /tmp/
+          name: xcache-creds
+        ports:
+        - containerPort: 1194
+
+      ## WAITING FOR VOMS TTS solution
+      - name: renew
+        args:
+          - --renew
+          - --vo 
+          - "{{ .Values.cache.vo }}"
+        imagePullPolicy: Always
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        volumeMounts:
+        - name: xcache-creds
+          mountPath: /tmp/
+        - name: vomses
+          mountPath: /etc/vomses
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - sudo
+            - -u
+            - xrootd
+            - voms-proxy-info
+          initialDelaySeconds: 300
+          periodSeconds: 600
+          
+  selector:
+    matchLabels:
+      app: proxy
+
+  replicas: {{ .Values.proxy.replicas }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xcache-pod
+  labels:
+    app: xcache
+spec:
+  template:
+    metadata:
+      labels:
+        app: xcache
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - xcache
+            topologyKey: "kubernetes.io/hostname"
+      volumes:
+      - name: xcache-data
+        hostPath:
+          path: {{ .Values.cache.cache_host_path }}
+      - name: xcache-creds
+        emptyDir: {}
+      - name: vomses
+        configMap:
+          name: vomses-config
+      - name: certs
+        secret:
+          secretName: certs
+          defaultMode: 256
+      containers:
+      - name: cache
+        imagePullPolicy: Always
+        args:
+        - --nogsi
+        - --proxy
+        - --health_port
+        - "8088"
+        env:
+        - name: BLOCK_SIZE
+          value: "{{ .Values.cache.block_size}}"
+        - name: CACHE_LOG_LEVEL
+          value: "info"
+        - name: CACHE_PATH
+          value: /data/xrd
+        - name: CACHE_RAM_GB
+          value: "{{ .Values.cache.mem_gb}}"
+        - name: HI_WM
+          value: "{{ .Values.cache.high_wm }}"
+        - name: LOW_WM
+          value: "{{ .Values.cache.low_wm }}"
+        - name: N_PREFETCH
+          value: "{{ .Values.cache.n_prefetch }}"
+        - name: ORIGIN_HOST
+          value: "{{ .Values.cache.origin_host }}"
+        - name: ORIGIN_XRD_PORT
+          value: "{{ .Values.cache.origin_xrd_port }}"
+        - name: REDIR_CMSD_PORT
+          value: "{{ .Values.redirector.cmsport }}"
+        - name: REDIR_HOST
+          value: "{{ .Values.cache.redir_host }}"
+        - name: STREAMS
+          value: "{{ .Values.cache.streams }}"
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /data/xrd
+          name: xcache-data
+        ## WAITING FOR CMS VOMS TTS solution
+        - mountPath: /tmp/
+          name: xcache-creds
+        livenessProbe:
+          exec:
+            command:
+            - curl
+            - -f
+            - http://localhost:8088/check_health
+          initialDelaySeconds: 300
+          periodSeconds: 60
+        ports:
+        - containerPort: 32294
+        - containerPort: 31113
+        - containerPort: 8080
+
+      # ## WAITING FOR VOMS TTS solution
+      - name: renew
+        args:
+          - --renew
+          - --vo 
+          - "{{ .Values.cache.vo }}"
+        imagePullPolicy: Always
+        image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+        volumeMounts:
+        - name: xcache-creds
+          mountPath: /tmp/
+        - name: vomses
+          mountPath: /etc/vomses
+        - name: certs
+          mountPath: "/etc/grid-security/xrd/cert"
+          readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - sudo
+            - -u
+            - xrootd
+            - voms-proxy-info
+          initialDelaySeconds: 300
+          periodSeconds: 600
+
+      # - name: client
+      #   imagePullPolicy: Always
+      #   command: 
+      #   - /bin/bash
+      #   imagePullPolicy: Always
+      #   image: "{{ .Values.cache.repository }}:{{ .Values.cache.tag }}"
+      #   volumeMounts:
+      #   - name: xcache-creds
+      #     mountPath: /tmp/
+
+      #   livenessProbe:
+      #     exec:
+      #       command:
+      #       - curl
+      #       - -f
+      #       - http://localhost:8888/check_health
+      #     initialDelaySeconds: 300
+      #     periodSeconds: 60
+
+  selector:
+    matchLabels:
+      app: xcache
+
+  replicas: {{ .Values.cache.replicas }}
