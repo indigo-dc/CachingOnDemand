@@ -49,6 +49,8 @@ public:
 
    XrdSysError &m_log;
 
+   
+
 protected:
    std::vector<Rule> m_rules;
 };    

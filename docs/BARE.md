@@ -16,7 +16,7 @@ Create and execute the following script (we are going to install the 4.8.3 versi
 
 ```bash
 #!/bin/bash
-XRD_VERSION=4.8.3-1.el7
+XRD_VERSION=4.8.3
 
 echo "LC_ALL=C" >> /etc/environment \
     && echo "LANGUAGE=C" >> /etc/environment \
@@ -34,7 +34,7 @@ yum --setopt=tsflags=nodocs -y install epel-release yum-plugin-ovl \
 yum install -y ca-policy-egi-core ca-policy-lcg
 /usr/sbin/fetch-crl -q
 
-yum install xrootd-server-$VERSION
+yum install xrootd-server-$XRD_VERSION
 
 mkdir -p /etc/grid-security/xrd/
 
