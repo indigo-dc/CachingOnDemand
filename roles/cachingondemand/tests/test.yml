@@ -3,7 +3,7 @@
   roles:
     - role: CachingOnDemand
       orchestrator: "metal"
-      xrootd_version: 4.9.10
+      xrootd_version: 4.11.0
       metricbeat_version: 6.2.4-x86_64
       monitoring:
       path_to_certs: /etc/grid-security/xrd
