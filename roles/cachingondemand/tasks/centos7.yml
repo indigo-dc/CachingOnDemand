@@ -86,47 +86,56 @@
     name: xrootd-renew-proxy.timer
     enabled: yes
     masked: no
+  when: (test is not undefined) or (not test)
 
 - name: Make sure xrootd-renew-proxy is running
   systemd: 
     state: restarted
     name: xrootd-renew-proxy.timer
+  when: (test is not undefined) or (not test)
 
 - name: fetch-crl -q
   command: /usr/sbin/fetch-crl -q
+  when: (test is not undefined) or (not test)
 
 - name: enable service fetch-crl-cron and ensure it is not masked
   systemd:
     name: fetch-crl-cron
     enabled: yes
     masked: no
+  when: (test is not undefined) or (not test)
 
 - name: Make sure fetch-crl-cron is running
   systemd: 
     state: restarted
-    name: fetch-crl-cron 
+    name: fetch-crl-cron
+  when: (test is not undefined) or (not test)
 
 - name: enable service xrootd@xcache and ensure it is not masked
   systemd:
     name: xrootd@xcache
     enabled: yes
     masked: no
+  when: (test is not undefined) or (not test)
 
 - name: Make sure xrootd@xcache is running
   systemd: 
     state: restarted
     name: xrootd@xcache
+  when: (test is not undefined) or (not test)
 
 - name: enable service cmsd@xcache
   systemd:
     name: cmsd@xcache
     enabled: yes
     masked: no
+  when: (test is not undefined) or (not test)
 
 - name: Make sure cmsd@xcache is running
   systemd: 
     state: restarted
     name: cmsd@xcache
+  when: (test is not undefined) or (not test)
 
 - name: enable service metricbeat
   systemd:
