@@ -1,0 +1,142 @@
+---
+- name: get EGI repos 1/2
+  get_url:
+    url: http://repository.egi.eu/community/software/preview.repository/2.0/releases/repofiles/centos-7-x86_64.repo 
+    dest: /etc/yum.repos.d/centos-7-x86_64.repo
+
+- name: get EGI repos 2/2
+  get_url:
+    url: http://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo 
+    dest: /etc/yum.repos.d/EGI-trustanchors.repo
+
+- name: install base packages 1/2 
+  yum:
+    name: 
+      - epel-release 
+      - yum-plugin-ovl
+    state: latest
+
+- name: install base packages 2/2
+  yum:
+    name: 
+      - fetch-crl 
+      - wn 
+      - sysstat
+      - ca-policy-egi-core 
+      - ca-policy-lcg
+      - xrootd-server-{{ xrootd_version }}
+    state: installed
+
+- name: get metricbeat rpm
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-{{ metricbeat_version }}.rpm
+    dest: /tmp/metricbeat-{{ metricbeat_version }}.rpm
+  when: monitoring == "metricbeat"
+
+- name: install metricbeat
+  yum:
+    name: /tmp/metricbeat-{{ metricbeat_version }}.rpm
+    state: installed
+  when: monitoring == "metricbeat"
+
+- name: create xcache server configuration
+  template: 
+    src: templates/metal/xcache-server-conf.j2
+    dest: /etc/xrootd/xrootd-xcache.cfg
+    owner: xrootd
+    group: xrootd
+
+- name: create /etc/xrootd/Authfile-noauth
+  template: 
+    src: templates/metal/Authfile-noauth.j2
+    dest: /etc/xrootd/Authfile-noauth
+
+- name: set xrootd owner for "{{ path_to_certs }}"
+  file: 
+    dest: "{{ path_to_certs }}"
+    owner: xrootd
+    group: xrootd
+    recurse: yes
+
+- name: set xrootd owner for cache directory "{{ CACHE_PATH }}"
+  file: 
+    dest: "{{ CACHE_PATH }}"
+    owner: xrootd
+    group: xrootd
+    recurse: yes
+
+- name: create metricbeat configuration 
+  template:
+    src: templates/metricbeat-conf.j2
+    dest: /etc/metricbeat/metricbeat.yml
+  when: monitoring == "metricbeat"
+
+- name: create renew proxy service configuration
+  template:
+    src: templates/metal/xrootd-renew-proxy-conf.j2
+    dest: /usr/lib/systemd/system/xrootd-renew-proxy.service
+
+- name: create renew proxy timer configuration
+  template: 
+    src: templates/metal/xrootd-renew-proxy-timer-conf.j2
+    dest: /usr/lib/systemd/system/xrootd-renew-proxy.timer
+
+- name: enable service xrootd-renew-proxy
+  systemd:
+    name: xrootd-renew-proxy.timer
+    enabled: yes
+    masked: no
+
+- name: Make sure xrootd-renew-proxy is running
+  systemd: 
+    state: restarted
+    name: xrootd-renew-proxy.timer
+
+- name: fetch-crl -q
+  command: /usr/sbin/fetch-crl -q
+
+- name: enable service fetch-crl-cron and ensure it is not masked
+  systemd:
+    name: fetch-crl-cron
+    enabled: yes
+    masked: no
+
+- name: Make sure fetch-crl-cron is running
+  systemd: 
+    state: restarted
+    name: fetch-crl-cron 
+
+- name: enable service xrootd@xcache and ensure it is not masked
+  systemd:
+    name: xrootd@xcache
+    enabled: yes
+    masked: no
+
+- name: Make sure xrootd@xcache is running
+  systemd: 
+    state: restarted
+    name: xrootd@xcache
+
+- name: enable service cmsd@xcache
+  systemd:
+    name: cmsd@xcache
+    enabled: yes
+    masked: no
+
+- name: Make sure cmsd@xcache is running
+  systemd: 
+    state: restarted
+    name: cmsd@xcache
+
+- name: enable service metricbeat
+  systemd:
+    name: metricbeat
+    enabled: yes
+    masked: no
+  when: monitoring == "metricbeat"
+
+- name: Make sure metricbeat is running
+  systemd: 
+    state: restarted
+    name: metricbeat
+  when: monitoring == "metricbeat"
