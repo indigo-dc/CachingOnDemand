@@ -42,11 +42,9 @@ helm-build:
 
 ansible-build:
 	mkdir -p /tmp/ansible
-	cp -r roles/cachingondemand/.* /tmp/ansible/
-	cp -r roles/cachingondemand/* /tmp/ansible/
+	cp -r roles/cachingondemand /tmp/ansible/
 	git checkout ansible
-	cp -r /tmp/ansible/.* ./
-	cp -r /tmp/ansible/* ./
+	cp -r /tmp/ansible/cachingondemand/* ./
 	git add -A
 	git commit -m ${COMMIT_MSG}
 	git push origin ansible
