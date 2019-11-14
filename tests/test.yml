@@ -26,3 +26,4 @@
       elk_endpoint: localhost:9000
       elastic_username: dodas
       elastic_password: testpass
+      test: true
