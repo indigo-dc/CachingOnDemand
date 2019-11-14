@@ -1,0 +1,17 @@
+---
+sudo: required
+
+services:
+  - docker
+
+script:
+- 'sudo docker run --name centos-travis --detach --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --volume="${PWD}":/CachingOnDemand:ro dciangot/travis:centos sleep infinity'
+- 'sudo docker exec centos-travis env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /CachingOnDemand/tests/test.yml -i /CachingOnDemand/tests/inventory --syntax-check'
+- 'sudo docker exec  centos-travis env ANSIBLE_FORCE_COLOR=1 ansible-playbook -v /CachingOnDemand/tests/test.yml  -i /CachingOnDemand/tests/inventory'
+
+before_install:
+  - 'sudo docker pull dciangot/travis:centos'
+#  - 'sudo docker build --no-cache --rm --tag=centos-7:ansible tests'
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
